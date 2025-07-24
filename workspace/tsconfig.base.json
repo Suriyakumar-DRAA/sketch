@@ -1,0 +1,24 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2020", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@org/sketch": ["sketch/src/index.ts"],
+      "@org/sketch/textbox": ["sketch/src/textbox/index.ts"],
+      "@org/sketch/dropdown": ["sketch/src/dropdown/index.ts"]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}
