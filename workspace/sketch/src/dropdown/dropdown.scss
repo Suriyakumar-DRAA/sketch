@@ -1,0 +1,94 @@
+// ::ng-deep .ng-select.is-invalid > .ng-select-container {
+//     border-radius: 4px;
+//     border: 1px solid #dc3545;
+// }
+
+
+:host {
+    display: block;
+    position: relative;
+}
+
+/* --- Container for the floating label --- */
+.form-floating {
+    position: relative;
+    /* 50px */
+}
+
+/*
+   * The label for the dropdown. It starts positioned inside the input area.
+   */
+.form-floating>label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    padding: 0.5rem 0.75rem;
+    /* Adjust padding to vertically center */
+    pointer-events: none;
+    border: 1px solid transparent;
+    transform-origin: 0 0;
+    transition: opacity .1s ease-in-out, transform .2s ease-in-out;
+    color: #6c757d;
+    z-index: 3;
+    /* Ensure label is above the ng-select input area */
+}
+
+/*
+   * This is the animation for the floating label.
+   * It triggers when the container has the 'is-active' class.
+   * It scales the label down and moves it up to sit "in" the border.
+   */
+.form-floating.is-active>label {
+    transform: scale(0.85) translateY(-0.65rem) translateX(0.75rem);
+    background-color: #ffffff;
+    /* Match the page background */
+    border: 1px solid #ffffff;
+    /* Match the page background */
+    padding: 0 0.25rem;
+    height: 1.5rem;
+    width: auto;
+    font-size: 0.84rem;
+}
+
+/*
+   * Style adjustments for ng-select to make it look like a Bootstrap form-control
+   * and work with the floating label.
+   */
+:host ::ng-deep .ng-select .ng-select-container {
+    height: 2.5rem;
+    /* 40px */
+    min-height: 0;
+}
+
+:host ::ng-deep .form-floating .ng-select-container {
+    padding-top: 0.25rem;
+    /* Push the selected value down to make room for the floated label */
+}
+
+/* Adjust vertical alignment of the selected value */
+:host ::ng-deep .ng-select.ng-select-single .ng-select-container .ng-value-container {
+    padding-top: 0;
+}
+
+/* Style the border red when the form control is invalid */
+:host ::ng-deep .ng-select.is-invalid .ng-select-container {
+    border-color: #dc3545;
+    /* Bootstrap's danger color */
+}
+
+/* --- Bootstrap utility classes that might be needed --- */
+.text-danger {
+    color: #dc3545 !important;
+}
+
+.invalid-feedback {
+    width: 100%;
+    margin-top: .25rem;
+    font-size: .875em;
+    color: #dc3545;
+}
+
+.d-block {
+    display: block !important;
+}

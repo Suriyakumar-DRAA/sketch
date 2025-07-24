@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router'; 
-import { TextboxComponent } from '@org/sketch/textbox'
+import { Textbox } from '@org/sketch/textbox'
 import { Dropdown } from '@org/sketch/dropdown'
 
 @Component({
-  imports: [ RouterModule, TextboxComponent, Dropdown],
+  imports: [ RouterModule, Textbox, Dropdown],
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.scss',

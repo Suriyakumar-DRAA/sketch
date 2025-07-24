@@ -99,3 +99,20 @@ And join the Nx community:
 - [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
 - [Our Youtube channel](https://www.youtube.com/@nxdevtools)
 - [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+
+# Create workspace for the Nx monorepo
+npx create-nx-workspace@latest workspace
+
+# For the textbox component
+npx nx generate @nx/angular:library --name=textbox --directory=libs/textbox --publishable --importPath=@dragarwal/sketch/textbox --standalone --style=scss
+
+npx nx generate @nx/angular:library --name=dropdown --directory=libs/dropdown --publishable --importPath=@dragarwal/sketch/dropdown --standalone --style=scss
+
+npx nx generate @nx/angular:library --name=sketch --directory=libs/sketch --publishable --importPath=@dragarwal/sketch --standalone --style=scss
+
+# build library
+- cd sketch
+- npm run build
+
+# Application start
+- npm install ./dist/sketch --save

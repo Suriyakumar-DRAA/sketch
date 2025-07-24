@@ -1,1 +1,12 @@
-<p>dropdown works!</p>
+<div class="form-floating form-floating-in-border" [class.is-active]="(ngControl.value)">
+    <ng-select [items]="items" [bindLabel]="bindLabel" [bindValue]="bindValue" 
+        [(ngModel)]="value" (change)="onSelectionChange($event)" [readonly]="isDisabled"
+        [ngClass]="{'is-invalid': ngControl.invalid && (ngControl.dirty || ngControl.touched || submitted)}">
+    </ng-select>
+    <!-- The floating label -->
+    <label>{{ label }} <span *ngIf="required" class="text-danger">*</span></label>
+</div>
+
+<div *ngIf="ngControl.invalid && (ngControl.dirty || ngControl.touched || submitted)" class="invalid-feedback d-block">
+    {{validationMessage ? validationMessage : ''}}
+</div>

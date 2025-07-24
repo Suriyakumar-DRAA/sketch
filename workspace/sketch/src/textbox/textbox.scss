@@ -1,0 +1,65 @@
+/* --- Custom CSS to reduce height and spacing --- */
+.form-floating {
+  /* Further reduce the overall height of the container */
+  height: 3.125rem;
+}
+
+.form-floating>.form-control,
+.form-floating>.form-control-plaintext,
+.form-floating>.form-select {
+  /* Set a specific height for the input */
+  height: 2.5rem;
+  /* Remove Bootstrap's default min-height to allow for smaller heights */
+  min-height: 0;
+  /* Adjust top padding for the new height */
+  padding-top: 1.25rem;
+}
+
+.form-floating>label {
+  /* Adjust padding to fit the new height */
+  padding: 0.45rem;
+}
+
+/* --- Custom CSS for the "in-border" label effect --- */
+.form-floating-in-border>.form-control:focus~label,
+.form-floating-in-border>.form-control:not(:placeholder-shown)~label {
+  transform: scale(0.85) translateY(-0.65rem) translateX(0.75rem);
+  /* Adjusted vertical transform */
+  background-color: #ffffff;
+  border: 1px solid #ffffff;
+  /* Matches .bg-light */
+  padding: 0 0.25rem;
+  height: 1.5rem;
+  width: auto;
+  font-size: 0.85rem;
+}
+
+/* --- Custom CSS for the "In-Border" Character Counter --- */
+.char-counter {
+  position: absolute;
+  top: 0px;
+  /* Adjusted initial position for new height */
+  right: 0.75rem;
+  font-size: 0.7rem;
+  color: #6c757d;
+  /* Bootstrap's text-muted color */
+  background-color: #ffffff;
+  /* Match body background for the "cut-out" effect */
+  border: 1px solid #ffffff;
+  ;
+  padding: 0 0.25rem;
+  border-radius: 0.25rem;
+  z-index: 4;
+  opacity: 0;
+  /* Hidden by default */
+  visibility: hidden;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Show and move the counter up when the associated input is focused */
+.form-control~.char-counter {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(-0.5rem);
+  /* Adjusted vertical transform for new height */
+}
