@@ -1,0 +1,32 @@
+{
+  "name": "@org/sketch",
+  "version": "0.0.1",
+  "author": "Suriyakumar",
+  "peerDependencies": {
+    "@angular/common": "^20.1.0",
+    "@angular/core": "^20.1.0",
+    "@angular/forms": "^20.1.0"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "exports": {
+    "./utils": {
+      "import": "./utils/index.mjs",
+      "types": "./utils/index.d.ts"
+    },
+    "./textbox": {
+      "import": "./textbox/index.mjs",
+      "types": "./textbox/index.d.ts"
+    },
+    "./dropdown": {
+      "import": "./dropdown/index.mjs",
+      "types": "./dropdown/index.d.ts"
+    },
+    "./datepicker": {
+      "import": "./datepicker/index.mjs",
+      "types": "./datepicker/index.d.ts"
+    }
+  },
+  "sideEffects": false
+}

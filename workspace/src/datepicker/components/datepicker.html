@@ -1,0 +1,16 @@
+<div class="datepicker-wrapper-container">
+  <div class="form-floating form-floating-in-border">
+    <input type="text" class="form-control" [placeholder]="placeholder" [bsConfig]="bsConfig" [minDate]="minDate"
+      [maxDate]="maxDate" [ngModel]="value" (ngModelChange)="onPickerChange($event)" (blur)="handleBlur()"
+      [disabled]="isDisabled" bsDatepicker
+      [class.is-invalid]="ngControl.invalid && (ngControl.touched || ngControl.dirty || submitted)" #datepickerInput>
+    <label *ngIf="label" class="form-label">{{ label }} <span *ngIf="required" class="text-danger">*</span></label>
+    <span class="datepicker-icon" (click)="toggleDatepicker()">
+      <i class="bi bi-calendar3"></i>
+    </span>
+  </div>
+  <!-- Internal Validation Message Display -->
+  <div *ngIf="ngControl.invalid && (ngControl.touched || ngControl.dirty || submitted)" class="invalid-feedback">
+    {{ validationMessage }}
+  </div>
+</div>

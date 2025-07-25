@@ -1,4 +1,59 @@
-<lib-textbox></lib-textbox>
-<lib-dropdown></lib-dropdown>
+<!-- Bootstrap 5 Example -->
+<div class="d-flex justify-content-center mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h3 class="text-primary">
+                <i class="bi bi-lightning-charge-fill"></i>
+                UI Library
+            </h3>
+
+        </div>
+    </div>
+</div>
+<div class="form-container">
+    <div class=" card shadow-sm m-4">
+        <div class="card-body mb-4">
+            <form #profileForm="ngForm" novalidate>
+                <div class="row">
+                    <div class="col-2 mb-2">
+                        <lightning-dropdown [label]="'Salutation'" [items]="salutationMaster" bindLabel="name"
+                            bindValue="id" [required]="true" [(ngModel)]="patientDetail.salutation" name="salutation"
+                            [validationMessage]="'Choose a salutation'" [submitted]="submitted">
+                        </lightning-dropdown>
+                    </div>
+                    <div class="col mb-2">
+                        <lightning-textbox label="First Name" [(ngModel)]="patientDetail.firstName" name="firstName"
+                            [minLength]="2" [maxLength]="40" [required]="true" [allowedChars]="'alpha'"
+                            [submitted]="submitted">
+                        </lightning-textbox>
+                    </div>
+                    <div class="col mb-2">
+                        <lightning-textbox label="Middle Name" [(ngModel)]="patientDetail.middleName" name="middleName"
+                            [minLength]="2" [maxLength]="40" [required]="true" [allowedChars]="'alpha-dot'"
+                            [submitted]="submitted">
+                        </lightning-textbox>
+                    </div>
+                    <div class="col mb-2">
+                        <lightning-textbox label="Last Name" [(ngModel)]="patientDetail.lastName" name="lastName"
+                            [minLength]="2" [maxLength]="10" [required]="true" [allowedChars]="'alpha'"
+                            [submitted]="submitted">
+                        </lightning-textbox>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-2">
+                        <lightning-datepicker label="Date of Birth" [(ngModel)]="patientDetail.dob" name="dob"
+                            [required]="true" [submitted]="submitted" [validationMessage]="'DOB is required'">
+                        </lightning-datepicker>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end mt-4 gap-2">
+                    <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
+                    <button type="submit" class="btn btn-primary me-2" (click)="onSubmit(profileForm)">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 <router-outlet></router-outlet>

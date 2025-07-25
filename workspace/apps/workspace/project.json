@@ -8,12 +8,16 @@
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:browser",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/apps/workspace",
         "index": "apps/workspace/src/index.html",
         "main": "apps/workspace/src/main.ts",
-        "polyfills": ["zone.js"],
+        "polyfills": [
+          "zone.js"
+        ],
         "tsConfig": "apps/workspace/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
@@ -22,7 +26,13 @@
             "input": "apps/workspace/public"
           }
         ],
-        "styles": ["apps/workspace/src/styles.scss"]
+        "styles": [
+          "node_modules/bootstrap/dist/css/bootstrap.min.css",
+          "node_modules/bootstrap-icons/font/bootstrap-icons.css",
+          "node_modules/@ng-select/ng-select/themes/default.theme.css",
+          "node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
+          "apps/workspace/src/styles.scss"
+        ]
       },
       "configurations": {
         "production": {
@@ -75,7 +85,9 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "outputs": [
+        "{workspaceRoot}/coverage/{projectRoot}"
+      ],
       "options": {
         "jestConfig": "apps/workspace/jest.config.ts"
       }

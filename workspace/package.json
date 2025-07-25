@@ -3,6 +3,12 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
+    "build:utils": "npx ng-packagr -p src/utils/ng-package.json",
+    "build:textbox": "npx ng-packagr -p src/textbox/ng-package.json",
+    "build:dropdown": "npx ng-packagr -p src/dropdown/ng-package.json",
+    "build:datepicker": "npx ng-packagr -p src/datepicker/ng-package.json",
+    "build:root": "npx ng-packagr -p src/root/ng-package.json",
+    "build": "npm run build:utils && npm run build:textbox && npm run build:dropdown && npm run build:datepicker && npm run build:root",
     "start:app": "nx serve workspace",
     "publish:nomagic": "cd dist/sketch && npm publish --access public"
   },
@@ -15,9 +21,10 @@
     "@angular/platform-browser": "~20.1.0",
     "@angular/platform-browser-dynamic": "~20.1.0",
     "@angular/router": "~20.1.0",
+    "@ng-select/ng-select": "^15.1.3",
+    "@org/sketch": "file:dist/sketch",
     "bootstrap": "^5.3.7",
     "bootstrap-icons": "^1.13.1",
-    "@ng-select/ng-select": "^15.1.3",
     "ngx-bootstrap": "~20.0.0",
     "rxjs": "~7.8.0",
     "zone.js": "~0.15.0"

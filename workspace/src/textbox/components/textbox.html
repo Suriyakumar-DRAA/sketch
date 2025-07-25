@@ -1,0 +1,11 @@
+<div class="form-floating form-floating-in-border">
+    <input type="text" class="form-control form-control-sm pe-5" [id]="label + '-input'" [placeholder]="placeholder"
+        [disabled]="isDisabled" (input)="onInputChange($event)" (blur)="onTouched()" class="form-control"
+        [class.is-invalid]="ngControl.invalid && (ngControl.dirty || ngControl.touched || submitted)">
+    <label [for]="label + '-input'">{{ label }} <span *ngIf="required" class="text-danger">*</span></label>
+    <span class="char-counter" *ngIf="showCount && maxLength">
+        {{typeof value === 'string' ? value.length : 0}}/{{maxLength}}</span>
+    <div *ngIf="ngControl.invalid && (ngControl.dirty || ngControl.touched || submitted)" class="invalid-feedback">
+        {{firstErrorMessage}}
+    </div>
+</div>
