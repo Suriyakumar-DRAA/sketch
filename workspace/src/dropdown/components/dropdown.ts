@@ -2,7 +2,7 @@ import { Component, EventEmitter, forwardRef, Input, OnChanges, OnInit, Optional
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormsModule, NG_VALIDATORS, NG_VALUE_ACCESSOR, NgControl, ValidationErrors, Validators } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { ControlValueAccessorBase } from '@org/sketch/utils';
+import { ControlValueAccessorBase } from '@suriya_40/sketch/utils';
 
 @Component({
   selector: 'lightning-dropdown',

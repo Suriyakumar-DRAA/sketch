@@ -2,7 +2,7 @@
 import { Component, EventEmitter, forwardRef, Input, OnChanges, OnInit, Optional, Output, Self, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR, NgControl, ValidationErrors, ValidatorFn } from '@angular/forms'; // Import FormsModule for ngModel
-import { ControlValueAccessorBase } from '@org/sketch/utils';
+import { ControlValueAccessorBase } from '@suriya_40/sketch/utils';
 
 export type AllowedChars = 'alpha' | 'alpha-dot' | 'numeric' | 'alphanumeric' | 'alphanumeric-hyphen'  | 'alphanumeric-slash';
 

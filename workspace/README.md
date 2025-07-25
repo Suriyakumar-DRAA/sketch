@@ -116,3 +116,8 @@ npx nx generate @nx/angular:library --name=sketch --directory=libs/sketch --publ
 
 # Application start
 - npm install ./dist/sketch --save
+
+
+# Publish
+- username should match with npm package name (@<username>/sketch)
+- cd dist/sketch && npm publish --access public

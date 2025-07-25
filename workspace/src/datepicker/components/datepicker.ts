@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Optional, Output, Se
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormsModule, NgControl, ValidationErrors } from '@angular/forms';
 import { BsDatepickerModule, BsDatepickerConfig, BsDatepickerDirective } from 'ngx-bootstrap/datepicker';
-import { ControlValueAccessorBase } from '@org/sketch/utils';
+import { ControlValueAccessorBase } from '@suriya_40/sketch/utils';
 
 @Component({
   selector: 'lightning-datepicker',

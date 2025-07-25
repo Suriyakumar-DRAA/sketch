@@ -1,5 +1,5 @@
 {
-  "name": "@org/source",
+  "name": "@suriya_40/source",
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
@@ -10,7 +10,7 @@
     "build:root": "npx ng-packagr -p src/root/ng-package.json",
     "build": "npm run build:utils && npm run build:textbox && npm run build:dropdown && npm run build:datepicker && npm run build:root",
     "start:app": "nx serve workspace",
-    "publish:nomagic": "cd dist/sketch && npm publish --access public"
+    "publish": "cd dist/sketch && npm publish --access public"
   },
   "private": true,
   "dependencies": {
@@ -22,7 +22,7 @@
     "@angular/platform-browser-dynamic": "~20.1.0",
     "@angular/router": "~20.1.0",
     "@ng-select/ng-select": "^15.1.3",
-    "@org/sketch": "file:dist/sketch",
+    "@suriya_40/sketch": "^0.0.1",
     "bootstrap": "^5.3.7",
     "bootstrap-icons": "^1.13.1",
     "ngx-bootstrap": "~20.0.0",

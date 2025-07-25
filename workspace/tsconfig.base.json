@@ -15,11 +15,11 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@org/sketch": ["src/root/index.ts"],
-      "@org/sketch/utils": ["src/utils/index.ts"],
-      "@org/sketch/textbox": ["src/textbox/index.ts"],
-      "@org/sketch/dropdown": ["src/dropdown/index.ts"],
-      "@org/sketch/datepicker": ["src/datepicker/index.ts"]
+      "@suriya_40/sketch": ["src/root/index.ts"],
+      "@suriya_40/sketch/utils": ["src/utils/index.ts"],
+      "@suriya_40/sketch/textbox": ["src/textbox/index.ts"],
+      "@suriya_40/sketch/dropdown": ["src/dropdown/index.ts"],
+      "@suriya_40/sketch/datepicker": ["src/datepicker/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

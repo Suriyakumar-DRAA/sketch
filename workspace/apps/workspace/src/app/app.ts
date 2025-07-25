@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { RouterModule } from '@angular/router'; 
-import { TextboxComponent } from '@org/sketch/textbox';
-import { DropdownComponent } from '@org/sketch/dropdown';
-import { DatepickerComponent } from '@org/sketch/datepicker';
+import { TextboxComponent } from '@suriya_40/sketch/textbox';
+import { DropdownComponent } from '@suriya_40/sketch/dropdown';
+import { DatepickerComponent } from '@suriya_40/sketch/datepicker';
 export interface PatientDetail {
   salutation?: string;
   firstName?: string;

@@ -1,5 +1,5 @@
 {
-  "name": "@org/source",
+  "name": "@suriya_40/source",
   "$schema": "node_modules/nx/schemas/project-schema.json",
   "targets": {
     "local-registry": {

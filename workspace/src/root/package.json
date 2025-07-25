@@ -1,11 +1,16 @@
 {
-  "name": "@org/sketch",
+  "name": "@suriya_40/sketch",
   "version": "0.0.1",
   "author": "Suriyakumar",
   "peerDependencies": {
     "@angular/common": "^20.1.0",
     "@angular/core": "^20.1.0",
-    "@angular/forms": "^20.1.0"
+    "@angular/forms": "^20.1.0",
+    "@angular/platform-browser": "~20.1.0",
+    "@ng-select/ng-select": "^15.1.3",
+    "bootstrap": "^5.3.7",
+    "bootstrap-icons": "^1.13.1",
+    "ngx-bootstrap": "~20.0.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"
@@ -28,5 +33,8 @@
       "types": "./datepicker/index.d.ts"
     }
   },
-  "sideEffects": false
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  }
 }
