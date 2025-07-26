@@ -7,13 +7,13 @@ import { ControlValueAccessorBase } from '@suriya_40/sketch/utils';
 export type AllowedChars = 'alpha' | 'alpha-dot' | 'numeric' | 'alphanumeric' | 'alphanumeric-hyphen'  | 'alphanumeric-slash';
 
 @Component({
-  selector: 'lightning-textbox', // Your component's selector
+  selector: 'textbox', // Your component's selector
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './textbox.html',
   styleUrls: ['./textbox.scss'],
 })
-export class TextboxComponent extends ControlValueAccessorBase implements OnInit, OnChanges {
+export class Textbox extends ControlValueAccessorBase implements OnInit, OnChanges {
   @Input() label: string = '';
   @Input() labelOrientation: 'horizontal' | 'vertical' = 'vertical';
   @Input() placeholder: string = 'Enter value';

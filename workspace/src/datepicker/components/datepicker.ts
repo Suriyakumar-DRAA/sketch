@@ -5,12 +5,12 @@ import { BsDatepickerModule, BsDatepickerConfig, BsDatepickerDirective } from 'n
 import { ControlValueAccessorBase } from '@suriya_40/sketch/utils';
 
 @Component({
-  selector: 'lightning-datepicker',
+  selector: 'datepicker',
   imports: [CommonModule, FormsModule, BsDatepickerModule],
   templateUrl: './datepicker.html',
   styleUrl: './datepicker.scss',
 })
-export class DatepickerComponent extends ControlValueAccessorBase implements OnInit, OnChanges {
+export class Datepicker extends ControlValueAccessorBase implements OnInit, OnChanges {
 
   @ViewChild(BsDatepickerDirective) datepicker!: BsDatepickerDirective;
 

@@ -5,12 +5,12 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { ControlValueAccessorBase } from '@suriya_40/sketch/utils';
 
 @Component({
-  selector: 'lightning-dropdown',
+  selector: 'dropdown',
   imports: [CommonModule, FormsModule, NgSelectModule],
   templateUrl: './dropdown.html',
   styleUrl: './dropdown.scss'
 })
-export class DropdownComponent extends ControlValueAccessorBase implements OnInit, OnChanges {
+export class Dropdown extends ControlValueAccessorBase implements OnInit, OnChanges {
   @Input() items: any[] = [];
   @Input() label: string = '';
   @Input() bindLabel: string = 'label';

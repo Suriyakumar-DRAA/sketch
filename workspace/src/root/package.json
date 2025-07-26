@@ -1,6 +1,6 @@
 {
   "name": "@suriya_40/sketch",
-  "version": "0.0.2",
+  "version": "0.0.9",
   "author": "Suriyakumar",
   "peerDependencies": {
     "@angular/common": "^20.1.0",
@@ -17,38 +17,37 @@
   },
   "exports": {
     "./utils": {
-      "import": "./utils/index.mjs",
       "types": "./utils/index.d.ts",
-      "esm2022": "./utils/esm2022/sketch-utils.mjs",
-      "esm": "./utils/esm2022/sketch-utils.mjs",
-      "default": "./utils/fesm2022/sketch-utils.mjs"
+      "esm2022": "./utils/esm2022/suriya_40-sketch-utils.mjs",
+      "esm": "./utils/esm2022/suriya_40-sketch-utils.mjs",
+      "default": "./utils/fesm2022/suriya_40-sketch-utils.mjs"
     },
     "./textbox": {
-      "import": "./textbox/index.mjs",
       "types": "./textbox/index.d.ts",
-      "esm2022": "./textbox/esm2022/sketch-textbox.mjs",
-      "esm": "./textbox/esm2022/sketch-textbox.mjs",
-      "default": "./textbox/fesm2022/sketch-textbox.mjs"
+      "esm2022": "./textbox/esm2022/suriya_40-sketch-textbox.mjs",
+      "esm": "./textbox/esm2022/suriya_40-sketch-textbox.mjs",
+      "default": "./textbox/fesm2022/suriya_40-sketch-textbox.mjs"
     },
     "./dropdown": {
-      "import": "./dropdown/index.mjs",
       "types": "./dropdown/index.d.ts",
-      "esm2022": "./dropdown/esm2022/sketch-dropdown.mjs",
-      "esm": "./dropdown/esm2022/sketch-dropdown.mjs",
-      "default": "./dropdown/fesm2022/sketch-dropdown.mjs"
+      "esm2022": "./dropdown/esm2022/suriya_40-sketch-dropdown.mjs",
+      "esm": "./dropdown/esm2022/suriya_40-sketch-dropdown.mjs",
+      "default": "./dropdown/fesm2022/suriya_40-sketch-dropdown.mjs"
     },
     "./datepicker": {
-      "import": "./datepicker/index.mjs",
       "types": "./datepicker/index.d.ts",
-      "esm2022": "./datepicker/esm2022/sketch-datepicker.mjs",
-      "esm": "./datepicker/esm2022/sketch-datepicker.mjs",
-      "default": "./datepicker/fesm2022/sketch-datepicker.mjs"
+      "esm2022": "./datepicker/esm2022/suriya_40-sketch-datepicker.mjs",
+      "esm": "./datepicker/esm2022/suriya_40-sketch-datepicker.mjs",
+      "default": "./datepicker/fesm2022/suriya_40-sketch-datepicker.mjs"
     }
   },
   "files": [
     "index.mjs",
     "index.d.ts",
-    "textbox/"
+    "textbox/",
+    "dropdown/",
+    "datepicker/",
+    "utils/"
   ],
   "sideEffects": false,
   "publishConfig": {
