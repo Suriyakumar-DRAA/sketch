@@ -1,0 +1,75 @@
+/* Custom styles that work with Bootstrap */
+// @use '@suriya_40/sketch/data-table/styles/styles.scss' as *;
+@use './../styles/variable.scss' as *;
+
+@media (max-width: 768px) {
+  .card-header {
+    flex-direction: column;
+    align-items: stretch !important;
+    padding: 1rem;
+  }
+
+  .card-header>div {
+    justify-content: center;
+  }
+
+  .card-footer {
+    padding: 1rem;
+  }
+}
+
+/* Search highlighting */
+::ng-deep .search-highlight {
+  background-color: #fef08a;
+  color: #854d0e;
+  padding: 0.125rem 0.1rem;
+  border-radius: 0.25rem;
+  font-weight: 500;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.ag-datatables {
+
+  .sticky-top {
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+    background-color: $data-table-header-bg !important;
+  }
+
+  /* Enhanced table styles */
+  .table {
+    border-radius: $data-table-radius;
+  }
+
+  .table th {
+    font-size: 0.95rem;
+    padding: 0.4rem;
+    font-weight: bold;
+    border-bottom: 2px solid $data-table-border;
+    background-color: $data-table-header-bg;
+    cursor: pointer;
+  }
+
+  .table tbody {
+    font-size: 0.9rem;
+  }
+
+  tbody tr:hover {
+    background-color: $data-table-hover !important;
+    // transform: translateY(-1px);
+    transition: all 0.2s ease;
+  }
+
+  tbody tr td {
+    background: #ffffff;
+  }
+
+  .table tr:last-child td {
+    border-bottom: none;
+  }
+
+  td .badge {
+    padding: 0.5rem
+  }
+}

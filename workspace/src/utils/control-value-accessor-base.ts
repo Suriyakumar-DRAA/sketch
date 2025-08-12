@@ -1,4 +1,8 @@
 import { ControlValueAccessor } from "@angular/forms";
+
+/**
+ * @ignore
+ */
 export class ControlValueAccessorBase implements ControlValueAccessor {
   value: string | Date | [Date, Date] | null = null;
   isDisabled: boolean = false;

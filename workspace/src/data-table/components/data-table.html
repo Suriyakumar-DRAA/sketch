@@ -1,0 +1,108 @@
+<div class="container-fluid">
+    <div class="ag-container">
+        <!-- Active Filters -->
+        <div class="active-filter mb-2" *ngIf="activeFilters.size > 0 || searchTerm">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <span class="fw-medium small">Active Filters:</span>
+
+                    <!-- Search Filter -->
+                    <span class="badge bg-primary d-flex align-items-center gap-1" *ngIf="searchTerm">
+                        Search: "{{ searchTerm }}"
+                        <button type="button" class="btn-close btn-close-white" aria-label="Close"
+                            (click)="searchTerm=''; onSearchChange()" style="font-size: 0.6em;"></button>
+                    </span>
+
+                    <!-- Column Filters -->
+                    <span class="badge bg-primary d-flex align-items-center gap-1"
+                        *ngFor="let filter of activeFiltersArray">
+                        {{ getFilterLabel(filter.column) }}
+                        <button type="button" class="btn-close btn-close-white" aria-label="Close"
+                            (click)="removeFilter(filter.column)" style="font-size: 0.6em;"></button>
+                    </span>
+                </div>
+
+                <button class="btn btn-light border btn-sm" (click)="clearAllFilters()">
+                    Clear All
+                </button>
+            </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="">
+            <div class="d-flex justify-content-end mb-2 gap-2">
+                <!-- Search Box (not in an input group) -->
+                <div class="search-container col-12">
+                    <i class="bi bi-search search-icon"></i>
+                    <input type="text" class="form-control form-control-sm search-input"
+                        placeholder="Search all columns..." aria-label="Search" [(ngModel)]="searchTerm"
+                        (ngModelChange)="onSearchChange()">
+                </div>
+                <!-- Export to Excel Button -->
+                <button type="button" class="btn btn-light btn-sm border" *ngIf="false">
+                    <i class="bi bi-file-earmark-arrow-down me-1"></i>
+                    Export Excel
+                </button>
+            </div>
+        </div>
+
+        <!-- Data Table -->
+        <div class="table-responsive ag-datatables" style="max-height: 600px; overflow-y: auto;">
+            <table class="table table-hover mb-0">
+                <thead class="sticky-top">
+                    <tr>
+                        <th *ngFor="let column of columns">
+                            <app-column-header [config]="column" [hasActiveFilter]="hasActiveFilter(column.key)"
+                                [excelFiltersEnabled]="excelFiltersEnabled"
+                                [sortDirection]="getSortDirection(column.key)" (filter)="onFilter($event)"
+                                (sort)="onSort($event)">
+                            </app-column-header>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngIf="displayData.length === 0">
+                        <td [attr.colspan]="columns.length" class="text-center">
+                            No data available
+                        </td>
+                    </tr>
+                    <tr *ngFor="let row of displayData" (click)="onRowClick(row)">
+                        <td *ngFor="let column of columns" [style.width]="column.width" class="{{ column.columnClass || '' }}"
+                            (click)="onColumnClick($event, row, column)">
+                            <ng-container *ngIf="column.template; else defaultCell">
+                                <ng-container
+                                    *ngTemplateOutlet="column.template; context: { $implicit: row[column.key], row: row, column: column }">
+                                </ng-container>
+                            </ng-container>
+
+                            <ng-template #defaultCell>
+                                <ng-container [ngSwitch]="!!column.link">
+                                    <a *ngSwitchCase="true" [href]="row[column.link!.hrefKey]"
+                                        [attr.target]="column.link!.target || '_self'"
+                                        [innerHTML]="getFormattedCell(row, column)">
+                                    </a>
+                                    <span *ngSwitchDefault class="{{ getHighlightClass(row[column.key], column) }}"
+                                        [innerHTML]="getFormattedCell(row, column)">
+                                    </span>
+                                </ng-container>
+                            </ng-template>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="footer">
+            <app-pagination *ngIf="displayData.length > 0" [config]="paginationConfig"
+                (pageChange)="onPageChange($event)" (pageSizeChange)="onPageSizeChange($event)"
+                (goToPage)="onGoToPage($event)">
+            </app-pagination>
+        </div>
+
+        <!-- Filter Panel -->
+        <app-filter-panel *ngIf="filterPanelColumn" [column]="filterPanelColumn" [isVisible]="filterPanelVisible"
+            [position]="filterPanelPosition" (apply)="onFilterApply($event)" (close)="onFilterClose()">
+        </app-filter-panel>
+    </div>
+</div>

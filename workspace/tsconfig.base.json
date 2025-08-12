@@ -16,10 +16,11 @@
     "baseUrl": ".",
     "paths": {
       "@suriya_40/sketch": ["src/root/index.ts"],
-      "@suriya_40/sketch/utils": ["src/utils/index.ts"],
-      "@suriya_40/sketch/textbox": ["src/textbox/index.ts"],
+      "@suriya_40/sketch/data-table": ["src/data-table/index.ts"],
+      "@suriya_40/sketch/datepicker": ["src/datepicker/index.ts"],
       "@suriya_40/sketch/dropdown": ["src/dropdown/index.ts"],
-      "@suriya_40/sketch/datepicker": ["src/datepicker/index.ts"]
+      "@suriya_40/sketch/textbox": ["src/textbox/index.ts"],
+      "@suriya_40/sketch/utils": ["src/utils/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

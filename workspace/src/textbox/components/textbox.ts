@@ -4,8 +4,13 @@ import { CommonModule } from '@angular/common';
 import { AbstractControl, ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR, NgControl, ValidationErrors, ValidatorFn } from '@angular/forms'; // Import FormsModule for ngModel
 import { ControlValueAccessorBase } from '@suriya_40/sketch/utils';
 
-export type AllowedChars = 'alpha' | 'alpha-dot' | 'numeric' | 'alphanumeric' | 'alphanumeric-hyphen'  | 'alphanumeric-slash';
+export type AllowedChars = 'alpha' | 'alpha-dot' | 'numeric' | 'alphanumeric' | 'alphanumeric-hyphen' | 'alphanumeric-slash';
 
+/**
+ * A flexible textbox component that supports various input validations and formatting options.
+ * @example
+ * <textbox [label]="'Name'" [(ngModel)]="name"></textbox>
+ */
 @Component({
   selector: 'textbox', // Your component's selector
   standalone: true,
@@ -14,41 +19,115 @@ export type AllowedChars = 'alpha' | 'alpha-dot' | 'numeric' | 'alphanumeric' | 
   styleUrls: ['./textbox.scss'],
 })
 export class Textbox extends ControlValueAccessorBase implements OnInit, OnChanges {
+  /**
+   * The label to display for the textbox.
+   */
   @Input() label: string = '';
+
+  /**
+   * Orientation of the label: 'horizontal' or 'vertical'.
+   * @default 'vertical'
+   */
   @Input() labelOrientation: 'horizontal' | 'vertical' = 'vertical';
+
+  /**
+   * Placeholder text for the input field.
+   * @default 'Enter value'
+   */
   @Input() placeholder: string = 'Enter value';
+
+  /**
+   * Whether the field is required.
+   * @default false
+   */
   @Input() required: boolean = false;
+
+  /**
+   * Minimum length of the input value.
+   * @default null
+   */
   @Input() minLength: number | null = null;
+
+  /**
+   * Maximum length of the input value.
+   * @default null
+   */
   @Input() maxLength: number | null = null;
+
+  /**
+   * Maximum number of decimal digits allowed (if applicable).
+   * @default null
+   */
   @Input({ transform: (value: string | number) => (value === null || value === undefined) ? null : parseInt(String(value), 10) })
   @Input() digit: number | null = null;
+
+  /**
+   * Restrict allowed characters in the input. E.g., 'alpha', 'numeric', etc.
+   */
   @Input() allowedChars?: AllowedChars = undefined;
-  @Input() isEmail: boolean = false; // For email validation
-  @Input() helpText: string = ''; // Optional help text for the input
-  @Input() showCount: boolean = true; // Show character count
+
+  /**
+   * Enable email validation for the input.
+   * @default false
+   */
+  @Input() isEmail: boolean = false;
+
+  /**
+   * Optional help text to display below the input.
+   * @default ''
+   */
+  @Input() helpText: string = '';
+
+  /**
+   * Show character count indicator.
+   * @default true
+   */
+  @Input() showCount: boolean = true;
+
+  /**
+   * Whether the form has been submitted (for validation display).
+   * @default false
+   */
   @Input() submitted: boolean = false;
 
   @Output() onValueChange = new EventEmitter<string | null>();
 
-  constructor(@Optional() @Self() public ngControl: NgControl) {
+  constructor(
+    /**
+     * @ignore
+     */
+    @Optional() @Self() public ngControl: NgControl
+  ) {
     super();
     if (this.ngControl) {
       this.ngControl.valueAccessor = this;
     }
   }
 
+  /**
+   * @ignore
+   */
   ngOnInit(): void {
     this.updateValidators();
   }
 
+  /**
+   * @ignore
+   */
   ngOnChanges(changes: SimpleChanges): void {
     this.updateValidators();
   }
 
+  /**
+   * @ignore
+   */
   onBlur(): void {
     this.onTouched();
   }
 
+  /**
+   * @ignore
+   */
   onInputChange(event: Event): void {
     const target = event.target as HTMLInputElement;
     this.value = target.value;
@@ -57,6 +136,9 @@ export class Textbox extends ControlValueAccessorBase implements OnInit, OnChang
     this.onValueChange.emit(this.value);
   }
 
+  /**
+   * @ignore
+   */
   private updateValidators(): void {
     if (!this.ngControl || !this.ngControl.control) {
       return;
@@ -75,6 +157,9 @@ export class Textbox extends ControlValueAccessorBase implements OnInit, OnChang
     this.ngControl.control.updateValueAndValidity();
   }
 
+  /**
+   * @ignore
+   */
   private commonValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const errors: ValidationErrors = {};
@@ -110,6 +195,9 @@ export class Textbox extends ControlValueAccessorBase implements OnInit, OnChang
     }
   }
 
+  /**
+   * @ignore
+   */
   private emailValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (!control.value) return null;
@@ -121,6 +209,9 @@ export class Textbox extends ControlValueAccessorBase implements OnInit, OnChang
     }
   }
 
+  /**
+   * @ignore
+   */
   private decimalValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (!control.value) return null;
@@ -138,6 +229,9 @@ export class Textbox extends ControlValueAccessorBase implements OnInit, OnChang
     }
   }
 
+  /**
+   * @ignore
+   */
   get firstErrorMessage(): string | null {
     if (!this.ngControl?.errors) {
       return null;

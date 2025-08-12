@@ -1,0 +1,96 @@
+/* Custom theme variables that work with Bootstrap */
+// @import './../styles/variable.scss';
+@use '../styles/variable.scss' as *;
+ 
+/* Custom scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: $data-table-surface;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $data-table-secondary;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: $data-table-primary;
+}
+
+/* Smooth transitions for theme changes */
+* {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ag-container {
+
+  .btn {
+    cursor: pointer;
+  }
+
+  .btn:disabled {
+    pointer-events: auto;
+    cursor: not-allowed;
+  }
+
+  .search-container {
+    position: relative;
+    max-width: 300px;
+  }
+
+  .search-icon {
+    position: absolute;
+    top: 50%;
+    left: 0.8rem;
+    /* Adjust as needed */
+    transform: translateY(-50%);
+    pointer-events: none;
+    /* Allows clicking through the icon to the input */
+    /* Muted color */
+  }
+
+  .search-input {
+    padding-left: 2.5rem;
+    /* Make space for the icon */
+  }
+
+  .footer {
+    border: 1px solid $data-table-border;
+    padding: 0px 10px;
+    background: $data-table-header-bg;
+    border-radius: 3px;
+    min-height: 30px;
+  }
+
+  .active-filter {
+    border: 1px solid #e3f1ff;
+    padding: 0.5rem;
+    background: #e3f1ff;
+  }
+
+}
+
+/* Loading animation */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  border: 2px solid $data-table-border;
+  border-top: 2px solid $data-table-primary;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  animation: spin 1s linear infinite;
+}

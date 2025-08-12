@@ -1,6 +1,6 @@
 {
   "name": "@suriya_40/sketch",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "author": "Suriyakumar",
   "peerDependencies": {
     "@angular/common": "^20.1.0",
@@ -39,6 +39,12 @@
       "esm2022": "./datepicker/esm2022/suriya_40-sketch-datepicker.mjs",
       "esm": "./datepicker/esm2022/suriya_40-sketch-datepicker.mjs",
       "default": "./datepicker/fesm2022/suriya_40-sketch-datepicker.mjs"
+    },
+    "./data-table": {
+      "types": "./data-table/index.d.ts",
+      "esm2022": "./data-table/esm2022/suriya_40-sketch-data-table.mjs",
+      "esm": "./data-table/esm2022/suriya_40-sketch-data-table.mjs",
+      "default": "./data-table/fesm2022/suriya_40-sketch-data-table.mjs"
     }
   },
   "files": [
@@ -47,6 +53,7 @@
     "textbox/",
     "dropdown/",
     "datepicker/",
+    "data-table/",
     "utils/"
   ],
   "sideEffects": false,

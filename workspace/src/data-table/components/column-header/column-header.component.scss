@@ -1,0 +1,47 @@
+/* Bootstrap-based column header styles */
+@use './../../styles/variable.scss' as *;
+
+.ag-column-header {
+  .d-flex.justify-content-between.align-items-center {
+    padding: 0.75rem 1rem;
+    border-radius: $data-table-radius-sm;
+    transition: background-color 0.2s ease;
+  }
+
+  .d-flex.justify-content-between.align-items-center:hover {
+    background-color: $data-table-hover;
+  }
+
+  .btn-primary {
+    background-color: $data-table-active-bg;
+    border-color: $data-table-active-bg;
+    color: $data-table-active-text;
+    box-shadow: $data-table-shadow;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: $data-table-shadow-lg;
+  }
+
+  .btn-outline-secondary {
+    color: $data-table-text-secondary;
+    border-color: $data-table-border;
+    background-color: transparent;
+  }
+
+  .btn-outline-secondary:hover {
+    background-color: $data-table-hover;
+    border-color: $data-table-primary;
+    color: $data-table-text;
+    transform: translateY(-1px);
+    box-shadow: $data-table-shadow;
+  }
+
+  .sort-indicator {
+    font-size: 0.8em;
+    color: $data-table-primary;
+    font-weight: bold;
+    padding-right: 5px;
+  }
+}

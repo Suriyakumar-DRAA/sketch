@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "declaration": true,
+    "declarationMap": false,
+    "inlineSources": true
+  },
+  "include": [
+    "src/root/**/*.ts",
+    "src/textbox/**/*.ts",
+    "src/dropdown/**/*.ts",
+    "src/datepicker/**/*.ts",
+    "src/data-table/**/*.ts",
+    "src/textbox/components/**/*.ts",
+    "src/dropdown/components/**/*.ts",
+    "src/data-table/components/**/*.ts",
+  ]
+}

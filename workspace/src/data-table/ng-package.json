@@ -1,0 +1,11 @@
+{
+  "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
+  "dest": "../../dist/sketch/data-table",
+  "lib": {
+    "entryFile": "index.ts",
+    "styleIncludePaths": ["styles"]
+  },
+  "assets": [
+    "styles/*.scss"
+  ]
+}

@@ -7,10 +7,13 @@
     "build:textbox": "npx ng-packagr -p src/textbox/ng-package.json",
     "build:dropdown": "npx ng-packagr -p src/dropdown/ng-package.json",
     "build:datepicker": "npx ng-packagr -p src/datepicker/ng-package.json",
+    "build:datatable": "npx ng-packagr -p src/data-table/ng-package.json",
     "build:root": "npx ng-packagr -p src/root/ng-package.json",
-    "build": "npm run build:utils && npm run build:textbox && npm run build:dropdown && npm run build:datepicker && npm run build:root",
+    "build": "npm run build:utils && npm run build:textbox && npm run build:dropdown && npm run build:datepicker && npm run build:datatable && npm run build:root",
     "start:app": "nx serve workspace",
-    "publish": "cd dist/sketch && npm publish --access public"
+    "publish": "cd dist/sketch && npm publish --access public",
+    "docs": "compodoc -p tsconfig.docs.json -d docs --exportFormat html",
+    "docs:serve": "compodoc -s -d docs"
   },
   "private": true,
   "dependencies": {
@@ -36,6 +39,7 @@
     "@angular/cli": "~20.1.0",
     "@angular/compiler-cli": "~20.1.0",
     "@angular/language-service": "~20.1.0",
+    "@compodoc/compodoc": "^1.1.26",
     "@eslint/js": "^9.8.0",
     "@nx/angular": "21.3.5",
     "@nx/eslint": "21.3.5",

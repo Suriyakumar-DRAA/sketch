@@ -1,0 +1,54 @@
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-3 ag-pagination">
+  <div class="d-flex align-items-center gap-3 flex-wrap">
+    <!-- <span class="text-theme-secondary small">
+      Showing {{ startRecord }} to {{ endRecord }} of {{ config.totalRecords }} records
+    </span> -->
+
+    <div class="d-flex align-items-center gap-2">
+      <label class="form-label mb-0 small">Showing </label>
+      <select class="form-select form-select-sm" [value]="config.pageSize" (change)="onPageSizeChange($event)"
+        style="width: auto;">
+        <option *ngFor="let size of pageSizeOptions" [value]="size">{{ getPageSizeLabel(size) }}</option>
+      </select>
+      <span class="small">of {{ config.totalRecords }} records</span>
+    </div>
+  </div>
+
+  <div class="d-flex align-items-center gap-2" *ngIf="config.pageSize !== -1">
+    <!-- Previous Button -->
+    <button class="btn btn-light btn-sm" [disabled]="!canGoPrevious()" (click)="onPreviousClick()">
+      <i class="bi bi-arrow-left-short"></i>
+    </button>
+
+    <!-- Page Numbers -->
+    <button *ngFor="let page of visiblePages" class="btn btn-sm border" [class.btn-primary]="page === config.currentPage"
+      [class.btn-light]="page !== config.currentPage && page !== -1" [class.btn-link]="page === -1"
+      [disabled]="page === -1" (click)="onPageClick(page)">
+      {{ page === -1 ? '...' : page }}
+    </button>
+
+    <!-- Next Button -->
+    <button class="btn btn-light btn-sm" [disabled]="!canGoNext()" (click)="onNextClick()">
+      <i class="bi bi-arrow-right-short"></i>
+    </button>
+
+    <!-- Go to Page -->
+    <!-- <div class="d-flex align-items-center gap-2 ms-3">
+      <span class="small">Go to:</span>
+      <input 
+        type="number" 
+        class="form-control form-control-sm"
+        style="width: 70px;"
+        [(ngModel)]="goToPageValue"
+        [min]="1" 
+        [max]="totalPages"
+        (keydown.enter)="onGoToPageSubmit()"
+        placeholder="1">
+      <button class="btn btn-primary btn-sm" (click)="onGoToPageSubmit()">Go</button>
+    </div> -->
+  </div>
+
+  <div class="text-center text-theme-secondary fst-italic" *ngIf="config.pageSize === -1">
+    <span>Showing all {{ config.totalRecords }} records</span>
+  </div>
+</div>
