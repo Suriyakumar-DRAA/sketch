@@ -6,6 +6,15 @@
     padding: 0.5rem;
     font-size: 1rem;
   }
+
+  &.data-table-footer {
+    border: 1px solid $data-table-border;
+    padding: 0px 10px;
+    background: $data-table-header-bg;
+    border-radius: 3px;
+    min-height: 30px;
+  }
+
 }
 
 

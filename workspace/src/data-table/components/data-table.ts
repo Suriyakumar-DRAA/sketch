@@ -1,12 +1,13 @@
 import { Component, OnInit, OnDestroy, HostListener, ViewEncapsulation, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule, CurrencyPipe, DecimalPipe, formatDate } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Subject, takeUntil, combineLatest, debounceTime, distinctUntilChanged, retry } from 'rxjs';
+import { Subject, takeUntil, combineLatest, debounceTime, distinctUntilChanged, retry, take } from 'rxjs';
 import { ThemeService } from '../services/theme.service';
 import { ColumnConfig, PaginationConfig, FilterPanelApplyEvent, FilterConfig, SortConfig, DataItem } from '../interfaces/data-table.interface';
 import { ColumnHeaderComponent } from './column-header/column-header.component';
 import { FilterPanelComponent } from './filter-panel/filter-panel.component';
 import { PaginationComponent } from './pagination/pagination.component';
+import { SettingsComponent } from './settings/settings.component';
 import { DEFAULT_FORMATS } from './../utils/constants'
 import { GenericDataService } from '../services/generic-data.service';
 
@@ -54,6 +55,7 @@ import { GenericDataService } from '../services/generic-data.service';
     ColumnHeaderComponent,
     FilterPanelComponent,
     PaginationComponent,
+    SettingsComponent,
   ],
   /**
   * @ignore
@@ -72,6 +74,7 @@ export class DataTable<T extends DataItem = DataItem> implements OnInit, OnDestr
 
   @Output() rowClick = new EventEmitter<any>();
   @Output() columnClick = new EventEmitter<{ row: any; column: ColumnConfig }>();
+  @Output() exportData = new EventEmitter<{ row: any; column: ColumnConfig }>();
 
   /**
   * @ignore
@@ -137,7 +140,6 @@ export class DataTable<T extends DataItem = DataItem> implements OnInit, OnDestr
   * @ignore
   */
   filterPanelPosition = { top: 0, left: 0 };
-
   /**
   * @ignore
   */
@@ -146,6 +148,14 @@ export class DataTable<T extends DataItem = DataItem> implements OnInit, OnDestr
   * @ignore
   */
   private destroy$ = new Subject<void>();
+  /**
+   * @ignore
+   */
+  public settingsVisible = false;
+  /**
+   * @ignore
+   */
+  public showTotals = false;
 
   constructor(
     private dataService: GenericDataService<T>,
@@ -762,5 +772,79 @@ export class DataTable<T extends DataItem = DataItem> implements OnInit, OnDestr
   onColumnClick(event: MouseEvent, row: any, column: ColumnConfig): void {
     event.stopPropagation(); // prevent rowClick
     this.columnClick.emit({ row, column });
+  }
+
+  onTotalChange(showTotals: boolean): void {
+    this.showTotals = showTotals;
+  }
+
+  onSettings() {
+    this.settingsVisible = !this.settingsVisible;
+  }
+
+  onColumnsChange(event: { column: string, visible: boolean }): void {
+    if (event.visible) {
+      this.visibleColumns.add(event.column);
+    } else {
+      this.visibleColumns.delete(event.column);
+    }
+    this.updateDisplayColumns();
+  }
+
+  onClose() {
+    this.settingsVisible = false;
+  }
+
+  getColumnValue(row: any, columnKey: string): any {
+    console.log(`Getting value for key: ${columnKey} from row:`, row);
+
+    // Handle nested keys like "address.city"
+    if (columnKey.includes('.')) {
+      const keys = columnKey.split('.');
+      let value = row;
+      for (const key of keys) {
+        if (value === null || value === undefined) return null;
+        value = value[key];
+      }
+      console.log(`Nested value for ${columnKey}:`, value);
+      return value;
+    }
+    // Handle direct keys
+    const directValue = row[columnKey];
+    console.log(`Direct value for ${columnKey}:`, directValue);
+    return directValue;
+  }
+
+  calculateColumnTotal(columnKey: string): number {
+    if (!this.displayData || this.displayData.length === 0) return 0;
+
+    const column = this.columns.find(col => col.key === columnKey);
+    if (!column || (column.type !== 'number' && column.type !== 'currency')) return 0;
+
+    // Get all filtered data, not just current page
+    let filteredData: T[] = [];
+    this.dataService.filteredData$.pipe(take(1)).subscribe(data => {
+      filteredData = data;
+    });
+
+    return filteredData.reduce((sum, row) => {
+      // const value = this.getColumnValue(row, columnKey);
+      const value = row[columnKey];
+      const numValue = Number(value);
+      return sum + (isNaN(numValue) ? 0 : numValue);
+    }, 0);
+  }
+
+  calculateColumnGrandTotal(columnKey: string): number {
+    const column = this.columns.find(col => col.key === columnKey);
+    if (!column || (column.type !== 'number' && column.type !== 'currency')) return 0;
+
+    // Calculate from original data (no filters applied)
+    return this.data.reduce((sum, row) => {
+      // const value = this.getColumnValue(row, columnKey);
+      const value = row[columnKey];
+      const numValue = Number(value);
+      return sum + (isNaN(numValue) ? 0 : numValue);
+    }, 0);
   }
 }

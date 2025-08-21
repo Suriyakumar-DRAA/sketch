@@ -1,0 +1,56 @@
+<div class="modal fade ag-data-table" [ngClass]="{'show': isSettingsVisible}"
+  [style.display]="isSettingsVisible ? 'block' : 'none'" tabindex="-1">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h5 class="modal-title">Settings</h5>
+        <button type="button" class="btn-close" (click)="onClose()" aria-label="Close"></button>
+      </div>
+      <!-- Modal Body -->
+      <div class="modal-body">
+        <!-- Column Visibility Settings -->
+        <div class="setting-group">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="setting-title"><i class="bi bi-columns me-1"></i> Column Visibility <span
+                class="text-muted small">({{ visibleColumns.size }}/{{ columns.length }})</span></h6>
+            <div class="d-flex align-items-center gap-3">
+              <!-- Show/Hide All Controls -->
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="allColumnsVisible" [(ngModel)]="allColumnsVisible"
+                  name="showTotals" (change)="toggleAllColumns(allColumnsVisible)">
+                <label class="form-check-label" for="allColumnsVisible">
+                  Show All
+                </label>
+              </div>
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="showTotalsToggle" [(ngModel)]="showTotals"
+                  name="showTotals" (change)="onShowTotalsChange()">
+                <label class="form-check-label" for="showTotalsToggle">
+                  Show Totals
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Individual Column Toggles -->
+          <div class="column-visibility-grid">
+            <div class="form-check" *ngFor="let column of columns">
+              <input class="form-check-input" type="checkbox" [id]="'column-' + column.key"
+                [checked]="isColumnVisible(column.key)" (change)="onColumnVisibilityChange(column.key, $event)">
+              <label class="form-check-label" [for]="'column-' + column.key">
+                {{ column.label }}
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary btn-sm" (click)="onClose()">
+          Done
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

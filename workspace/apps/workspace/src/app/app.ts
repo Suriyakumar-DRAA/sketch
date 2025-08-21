@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { Textbox } from '@suriya_40/sketch/textbox';
 import { Dropdown } from '@suriya_40/sketch/dropdown';
 import { Datepicker } from '@suriya_40/sketch/datepicker';
-import { DataTable, ColumnConfig } from '@suriya_40/sketch/data-table';
+import { DataTable, ColumnConfig, DataItem } from '@suriya_40/sketch/data-table';
 export interface PatientDetail {
   salutation?: string;
   firstName?: string;
@@ -80,7 +80,7 @@ export class App implements OnInit {
     const lastNames = ['Ramirez', 'Nguyen', 'White', 'Phillips', 'Brown', 'Green', 'Rogers', 'Reyes', 'Richardson', 'Allen', 'Ortiz', 'Perez', 'Garcia'];
 
     const data: Employee[] = [];
-    for (let i = 1; i <= 100000; i++) {
+    for (let i = 1; i <= 1000; i++) {
       data.push({
         id: i,
         url: `https://example.com/employee/${i}`,
@@ -98,7 +98,15 @@ export class App implements OnInit {
 
   private generateColumnConfig(): Array<ColumnConfig> {
     return [
-      { key: 'name', label: 'Name', type: 'text', sortable: true, filterable: true },
+      { key: 'name', label: 'Name', type: 'text', sortable: true, filterable: true,
+        link: {
+          target: '_blank',
+          getUrlFn: (value: any, row?: any) => {
+            if (!row) return '';
+            return 'https://example.com/employee/' + row.id;
+          },
+        }
+       },
       { key: 'email', label: 'Email', type: 'text', sortable: true, filterable: true },
       { key: 'department', label: 'Department', type: 'text', sortable: true, filterable: true },
       {
@@ -106,9 +114,9 @@ export class App implements OnInit {
         highlightColumn: {
           type: 'badge',
           getClassFn: (value) => {
-            if (value > 100000) return 'badge bg-success';
-            if (value >= 50000 && value <= 100000) return 'badge bg-warning text-dark';
-            return 'badge bg-danger';
+            if (value > 100000) return 'badge badge-light-success';
+            if (value >= 50000 && value <= 100000) return 'badge badge-light-warning';
+            return 'badge badge-light-danger';
           }
         }
       },
@@ -120,7 +128,7 @@ export class App implements OnInit {
       },
       { key: 'joinDate', label: 'Join Date', type: 'date', format: 'dd-MMM-yyyy', sortable: true, filterable: true },
       { key: 'location', label: 'Location', type: 'text', sortable: true, filterable: true },
-      { key: 'actions', label: 'Actions', type: 'text' }
+      // { key: 'actions', label: 'Actions', type: 'text' }
     ];
   }
 

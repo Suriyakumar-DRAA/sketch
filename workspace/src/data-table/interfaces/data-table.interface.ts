@@ -1,11 +1,6 @@
 import { TemplateRef } from "@angular/core";
 
 /**
- * Supported column data types.
- */
-export type types = 'text' | 'email' | 'number' | 'boolean' | 'decimal' | 'currency' | 'date';
-
-/**
  * Supported date display formats.
  */
 export type DateFormat = 'dd/MM/yyyy' | 'dd-MMM-yyyy' | 'HH:mm:ss a' | 'dd-MMM-yyyy hh:mm:ss a';
@@ -24,8 +19,17 @@ export type DecimalFormat = '1.0-0' | '1.0-2' | '1.2-2' | '1.2-3';
  * Link column configuration.
  */
 export interface LinkFormat {
-  /** Data key for href value. */
-  hrefKey: string;
+  /** Data key for static URL value. */
+  staticUrl?: string;
+  /**
+   * Function to dynamically construct the URL based on the cell value and row data.
+   * Overrides `hrefKey` if provided.
+   *
+   * @param value - The raw cell value for this column.
+   * @param row - The entire row data object.
+   * @returns A complete URL string.
+   */
+  getUrlFn?: (value: any, row?: any) => string;
   /** Link target behavior. */
   target?: '_blank' | '_self' | '_parent' | '_top';
 }
@@ -39,7 +43,7 @@ export interface HighlightColumn {
   /** Static class mapping based on cell value. */
   classMap?: { [key: string]: string };
   /** Function to dynamically determine CSS class based on value and row data. */
-  getClassFn?: (value: any, row?: any) => ('badge bg-success' | 'badge bg-warning text-dark' | 'badge bg-danger');
+  getClassFn?: (value: any, row?: any) => ('badge badge-light-success' | 'badge badge-light-warning' | 'badge badge-light-danger' | 'badge badge-light-secondary' | 'badge badge-light');
 }
 
 /**
@@ -91,7 +95,6 @@ export interface FilterOption {
 export interface BaseColumnConfig {
   key: string;
   label: string;
-  rowClass?: string;
   columnClass?: string;
   sortable?: boolean;
   filterable?: boolean;

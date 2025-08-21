@@ -1,7 +1,7 @@
 /* Custom theme variables that work with Bootstrap */
 // @import './../styles/variable.scss';
 @use '../styles/variable.scss' as *;
- 
+
 /* Custom scrollbar styling */
 ::-webkit-scrollbar {
   width: 8px;
@@ -27,6 +27,33 @@
   transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
+.data-table-search-container {
+  position: relative;
+  // max-width: 300px;
+}
+
+.data-table-search-icon {
+  position: absolute;
+  top: 50%;
+  left: 0.8rem;
+  /* Adjust as needed */
+  transform: translateY(-50%);
+  pointer-events: none;
+  /* Allows clicking through the icon to the input */
+  /* Muted color */
+}
+
+.data-table-search-input {
+  padding-left: 2.5rem;
+  /* Make space for the icon */
+}
+
+.data-table-active-filter {
+  border: 1px solid #e3f1ff;
+  padding: 0.5rem;
+  background: #e3f1ff;
+}
+
 .ag-container {
 
   .btn {
@@ -36,41 +63,6 @@
   .btn:disabled {
     pointer-events: auto;
     cursor: not-allowed;
-  }
-
-  .search-container {
-    position: relative;
-    max-width: 300px;
-  }
-
-  .search-icon {
-    position: absolute;
-    top: 50%;
-    left: 0.8rem;
-    /* Adjust as needed */
-    transform: translateY(-50%);
-    pointer-events: none;
-    /* Allows clicking through the icon to the input */
-    /* Muted color */
-  }
-
-  .search-input {
-    padding-left: 2.5rem;
-    /* Make space for the icon */
-  }
-
-  .footer {
-    border: 1px solid $data-table-border;
-    padding: 0px 10px;
-    background: $data-table-header-bg;
-    border-radius: 3px;
-    min-height: 30px;
-  }
-
-  .active-filter {
-    border: 1px solid #e3f1ff;
-    padding: 0.5rem;
-    background: #e3f1ff;
   }
 
 }

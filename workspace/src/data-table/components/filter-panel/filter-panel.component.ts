@@ -13,7 +13,7 @@ import { GenericDataService } from '../../services/generic-data.service';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './filter-panel.component.html',
-  styleUrls: ['./filter-panel.component.scss']
+  styleUrls: ['./filter-panel.component.scss', './../../styles/styles.scss']
 })
 export class FilterPanelComponent<T extends DataItem = DataItem> implements OnInit, OnDestroy, OnChanges {
   @Input() column!: string;

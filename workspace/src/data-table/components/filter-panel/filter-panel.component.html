@@ -79,9 +79,9 @@
       <!-- List Filter Mode -->
       <div *ngIf="filterMode === 'list'">
         <!-- Search -->
-        <div class="search-container mb-3">
-          <i class="bi bi-search search-icon"></i>
-          <input type="text" class="form-control form-control-sm search-input" placeholder="Search values..."
+        <div class="data-table-search-container mb-3">
+          <i class="bi bi-search data-table-search-icon"></i>
+          <input type="text" class="form-control form-control-sm data-table-search-input" placeholder="Search values..."
             aria-label="Search" [(ngModel)]="searchTerm">
         </div>
 
@@ -117,7 +117,6 @@
           </div>
         </div>
       </div>
-
     </div>
   </div>
 

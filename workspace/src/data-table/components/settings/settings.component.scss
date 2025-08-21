@@ -1,0 +1,56 @@
+/* Bootstrap-based column header styles */
+@use './../../styles/variable.scss' as *;
+
+
+.ag-data-table {
+
+  .modal-header,
+  .modal-footer {
+    background-color: $data-table-header-bg;
+    border-color: $data-table-border;
+  }
+
+  .modal-dialog-scrollable {
+    animation: slideIn 0.3s ease-out;
+  }
+
+  .setting-group {
+    margin-bottom: 2.5rem;
+    padding-bottom: 2rem;
+  }
+
+  .column-visibility-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.5rem;
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 0.8rem;
+    border: 1px solid $data-table-border;
+    border-radius: $data-table-radius;
+    background-color: $data-table-surface;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

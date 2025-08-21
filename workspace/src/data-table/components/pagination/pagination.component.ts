@@ -11,7 +11,7 @@ import { PaginationConfig } from '../../interfaces/data-table.interface';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './pagination.component.html',
-  styleUrls: ['./pagination.component.scss'],
+  styleUrls: ['./pagination.component.scss', './../../styles/styles.scss'],
   encapsulation: ViewEncapsulation.Emulated
 })
 export class PaginationComponent {

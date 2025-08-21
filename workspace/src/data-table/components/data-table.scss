@@ -33,7 +33,7 @@
   .sticky-top {
     position: sticky;
     top: 0;
-    z-index: 1020;
+    z-index: 10;
     background-color: $data-table-header-bg !important;
   }
 
@@ -71,5 +71,116 @@
 
   td .badge {
     padding: 0.5rem
+  }
+
+  td a {
+    text-decoration: none;
+  }
+
+  .badge-light-success {
+    background-color: #d1fae5;
+    /* Light green */
+    color: #065f46;
+    /* Dark green text */
+
+    &:hover {
+      background-color: #a7f3d0;
+      /* Slightly darker green on hover */
+    }
+  }
+
+  /* --- Custom Badge Style: Warning --- */
+  .badge-light-warning {
+    background-color: #fef3c7;
+    /* Light yellow */
+    color: #92400e;
+
+    /* Dark amber text */
+    &:hover {
+      background-color: #fde68a;
+      /* Slightly darker yellow on hover */
+    }
+  }
+
+  /* --- Custom Badge Style: Danger --- */
+  .badge-light-danger {
+    background-color: #fee2e2;
+    /* Light red */
+    color: #b91c1c;
+
+    /* Dark red text */
+    &:hover {
+      background-color: #fecaca;
+      /* Slightly darker red on hover */
+    }
+  }
+
+  /* --- Custom Badge Style: Secondary --- */
+  .badge-light-secondary {
+    background-color: #e5e7eb;
+    /* Light gray */
+    color: #374151;
+
+    /* Dark gray text */
+    &:hover {
+      background-color: #d1d5db;
+      /* Slightly darker gray on hover */
+    }
+  }
+
+  /* Totals row styling */
+  .table-totals {
+    background-color: $data-table-header-bg !important;
+    border-bottom: 2px solid $data-table-primary !important;
+    position: sticky;
+    top: 45px;
+    /* same as header height */
+    background: #fff;
+    z-index: 9;
+  }
+
+  .table-totals td {
+    color: $data-table-header-text !important;
+    font-weight: 600 !important;
+  }
+
+  .table-spaced .table-totals {
+    border: 2px solid $data-table-primary !important;
+    border-radius: $data-table-radius !important;
+    background-color: $data-table-header-bg !important;
+  }
+
+  /* Total display styling */
+  .total-display {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .filtered-total {
+    color: $data-table-primary !important;
+    font-size: 0.9rem;
+  }
+
+  .grand-total {
+    color: $data-table-text-secondary !important;
+    font-size: 0.8rem;
+    font-weight: 500 !important;
+  }
+
+  .single-total {
+    color: $data-table-primary !important;
+    font-size: 0.9rem;
+  }
+
+  .total-label {
+    color: $data-table-header-text !important;
+    font-size: 0.9rem;
+  }
+
+  .record-count {
+    color: $data-table-text-secondary !important;
+    font-size: 0.8rem;
+    font-weight: 500 !important;
   }
 }
