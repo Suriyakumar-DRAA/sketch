@@ -104,6 +104,8 @@ export interface BaseColumnConfig {
   template?: TemplateRef<any>;
   /** Function to transform cell data before display. */
   displayDataFn?: (value: any, row?: any) => string;
+  showColumn?: boolean; 
+  mergeRows?: boolean;
 }
 
 /**

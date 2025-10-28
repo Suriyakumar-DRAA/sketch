@@ -71,6 +71,7 @@ import { GenericDataService } from '../services/generic-data.service';
 export class DataTable<T extends DataItem = DataItem> implements OnInit, OnDestroy {
   @Input() data: T[] = [];
   @Input() columns: ColumnConfig[] = [];
+  @Input() mergeRowsBy: string = '';
 
   @Output() rowClick = new EventEmitter<any>();
   @Output() columnClick = new EventEmitter<{ row: any; column: ColumnConfig }>();
@@ -157,6 +158,11 @@ export class DataTable<T extends DataItem = DataItem> implements OnInit, OnDestr
    */
   public showTotals = false;
 
+  /**
+   * @ignore
+   */
+  public rowMergeEnabled = false;
+
   constructor(
     private dataService: GenericDataService<T>,
     private themeService: ThemeService,
@@ -197,7 +203,7 @@ export class DataTable<T extends DataItem = DataItem> implements OnInit, OnDestr
     if (formattedData.length > 0 && this.columns.length > 0) {
       // Initialize all columns as visible by default
       this.visibleColumns = new Set(this.columns.map(c => c.key));
-      this.updateDisplayColumns();
+      this.displayColumns = this.updateDisplayColumns();
 
       // Clear any existing filters and state
       this.dataService.clearAllFilters();
@@ -213,8 +219,8 @@ export class DataTable<T extends DataItem = DataItem> implements OnInit, OnDestr
   /**
   * @ignore
   */
-  private updateDisplayColumns(): void {
-    this.displayColumns = this.columns.filter(column => this.visibleColumns.has(column.key));
+  private updateDisplayColumns() {
+    return this.columns.filter(column => this.visibleColumns.has(column.key));
   }
 
   /**
@@ -234,7 +240,7 @@ export class DataTable<T extends DataItem = DataItem> implements OnInit, OnDestr
     this.dataService.paginatedData$
       .pipe(takeUntil(this.destroy$))
       .subscribe(data => {
-        this.displayData = data;
+        this.displayData = this.onMergeRows(data, this.columns);
       });
 
     // Subscribe to filtered data to get count
@@ -265,6 +271,71 @@ export class DataTable<T extends DataItem = DataItem> implements OnInit, OnDestr
         this.activeFilters = filters;
         this.activeFiltersArray = Array.from(filters.entries()).map(([column, config]) => ({ column, config }));
       });
+  }
+
+  /**
+   * @ignore
+  */
+  private onMergeRows(items: T[], displayColumns: ColumnConfig[]): any[] {
+    this.rowMergeEnabled = this.columns.some(c => c.mergeRows);
+    if (this.rowMergeEnabled && !this.mergeRowsBy) {
+      console.warn('Row merging is enabled but no mergeRowsBy key is specified.');
+      return items;
+    }
+    
+    if (!items || items.length === 0 || !this.mergeRowsBy || !this.rowMergeEnabled) {
+      return items;
+    }
+
+    // 1️⃣ Sort items by mergeRowsBy value first
+    const sortedItems = [...items].sort((a: any, b: any) => {
+      const key = this.mergeRowsBy!;
+      const aVal = (a[key] ?? '').toString().toLowerCase();
+      const bVal = (b[key] ?? '').toString().toLowerCase();
+      return aVal.localeCompare(bVal);
+    });
+
+    const mergedData: any[] = [];
+    let currentGroupValue: any = null;
+    let currentGroup: any[] = [];
+
+    for (const item of sortedItems) {
+      const keyValue = item[this.mergeRowsBy];
+
+      if (keyValue !== currentGroupValue) {
+        // process previous group
+        if (currentGroup.length > 0) {
+          this.assignRowspan(currentGroup, displayColumns);
+          mergedData.push(...currentGroup);
+        }
+
+        // start new group
+        currentGroupValue = keyValue;
+        currentGroup = [item];
+      } else {
+        currentGroup.push(item);
+      }
+    }
+
+    // handle last group
+    if (currentGroup.length > 0) {
+      this.assignRowspan(currentGroup, displayColumns);
+      mergedData.push(...currentGroup);
+    }
+
+    return mergedData;
+  }
+
+  private assignRowspan(group: any[], displayColumns: ColumnConfig[]) {
+    const mergeColumns = displayColumns.filter(c => c.mergeRows).map(c => c.key);
+
+    for (const col of mergeColumns) {
+      group[0][`${col}_rowspan`] = group.length;
+      // all subsequent rows should not display this cell
+      for (let i = 1; i < group.length; i++) {
+        group[i][`${col}_rowspan`] = 0;
+      }
+    }
   }
 
   /**
