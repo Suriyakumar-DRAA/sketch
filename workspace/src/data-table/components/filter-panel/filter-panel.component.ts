@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output, OnInit, OnDestroy, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Subject, takeUntil } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject, Subscription, takeUntil } from 'rxjs';
 import { FilterOption, DataItem, FilterPanelApplyEvent } from '../../interfaces/data-table.interface';
 import { GenericDataService } from '../../services/generic-data.service';
 
@@ -22,23 +22,26 @@ export class FilterPanelComponent<T extends DataItem = DataItem> implements OnIn
   @Output() close = new EventEmitter<void>();
   @Output() apply = new EventEmitter<FilterPanelApplyEvent>();
 
+  private searchSubject = new Subject<string>();
+  private searchSubscription!: Subscription;
+
   loading = false;
   filterOptions: FilterOption[] = [];
   searchTerm = '';
-  sortDirection: 'asc' | 'desc' = 'asc';
+  sortDirection: 'asc' | 'desc' | null = null;
   autoApply = true;
   selectAll = false;
-  
+
   // Text filter properties
   filterMode: 'list' | 'text' = 'list';
   textFilterOperator: 'equals' | 'notEquals' | 'beginsWith' | 'notBeginsWith' | 'endsWith' | 'notEndsWith' | 'contains' | 'notContains' = 'equals';
   textFilterValue = '';
-  
+
   // Number filter properties
   numberFilterOperator: 'equals' | 'notEquals' | 'greaterThan' | 'greaterThanOrEqual' | 'lessThan' | 'lessThanOrEqual' | 'between' | 'top10' | 'bottom10' | 'aboveAverage' | 'belowAverage' = 'equals';
   numberFilterValue: number | null = null;
   numberFilterValue2: number | null = null; // For 'between' operator
-  
+
   // Date filter properties
   dateFilterOperator: 'equals' | 'before' | 'after' | 'between' | 'today' | 'yesterday' | 'tomorrow' | 'thisWeek' | 'lastWeek' | 'nextWeek' | 'thisMonth' | 'lastMonth' | 'nextMonth' | 'thisQuarter' | 'lastQuarter' | 'nextQuarter' | 'thisYear' | 'lastYear' | 'nextYear' | 'yearToDate' | 'allDatesInPeriod' = 'equals';
   dateFilterValue: string | null = null;
@@ -69,10 +72,10 @@ export class FilterPanelComponent<T extends DataItem = DataItem> implements OnIn
       { value: 'allDatesInPeriod', label: 'All Dates in the Period' }
     ];
   }
-  
+
   private destroy$ = new Subject<void>();
 
-  constructor(private dataService: GenericDataService<T>) {}
+  constructor(private dataService: GenericDataService<T>) { }
 
   ngOnInit(): void {
     // Get current sort state from data service
@@ -83,15 +86,25 @@ export class FilterPanelComponent<T extends DataItem = DataItem> implements OnIn
           this.sortDirection = sort.direction;
         }
       });
-      
-    this.loadFilterOptions();
-    // Always default to list mode (Choose One)
-    this.filterMode = 'list';
+
+    this.searchSubscription = this.searchSubject
+      .pipe(
+        debounceTime(1000),        // wait 1 seconds after typing stops
+        distinctUntilChanged()    // only fire if term actually changed
+      )
+      .subscribe((term) => {
+        this.visibleItems = [];
+        this.loadMore();
+      });
+
+    // this.loadFilterOptions();
+    // // Always default to list mode (Choose One)
+    // this.filterMode = 'list';
   }
 
   ngOnChanges(): void {
     // Reload options when column changes
-    if (this.column) {
+    if (this.column && this.isVisible) {
       this.loadFilterOptions();
       // Always default to list mode (Choose One)
       this.filterMode = 'list';
@@ -101,6 +114,9 @@ export class FilterPanelComponent<T extends DataItem = DataItem> implements OnIn
   private loadFilterOptions(): void {
     console.log('FilterPanel loadFilterOptions with column:', this.column);
     this.loading = true;
+    this.filterOptions = [];
+    this.visibleItems = [];
+    this.searchTerm = '';
     this.dataService.getFilterOptions(this.column)
       .pipe(takeUntil(this.destroy$))
       .subscribe(options => {
@@ -113,28 +129,9 @@ export class FilterPanelComponent<T extends DataItem = DataItem> implements OnIn
           }
         });
         this.updateSelectAllState();
+        this.loadMore();
         this.loading = false;
       });
-  }
-
-  private checkIfTextColumn(): void {
-    // Check if this is a text column that should support text filtering
-    const textColumns: string[] = ['name', 'email', 'department', 'location', 'description', 'supplier', 'phone', 'city'];
-    const numberColumns: string[] = ['id', 'salary', 'price', 'totalOrders'];
-    const dateColumns: string[] = ['joinDate', 'createdDate', 'registrationDate'];
-    
-    if (textColumns.includes(this.column)) {
-      // Keep current mode, but allow switching
-    } else if (numberColumns.includes(this.column)) {
-      // For number columns, default to number filter mode
-      this.filterMode = 'text'; // We'll use 'text' mode for number filters too
-    } else if (dateColumns.includes(this.column)) {
-      // For date columns, default to date filter mode
-      this.filterMode = 'text'; // We'll use 'text' mode for date filters too
-    } else {
-      // Force list mode for non-text columns
-      this.filterMode = 'list';
-    }
   }
 
   get isTextColumn(): boolean {
@@ -148,7 +145,7 @@ export class FilterPanelComponent<T extends DataItem = DataItem> implements OnIn
     // Get column config from data service to check actual column type
     const columns = this.dataService.getColumns();
     const columnConfig = columns.find(col => col.key === this.column);
-    return columnConfig?.type === 'number';
+    return columnConfig?.type === 'number' || columnConfig?.type === 'currency';
   }
 
   get isDateColumn(): boolean {
@@ -188,26 +185,31 @@ export class FilterPanelComponent<T extends DataItem = DataItem> implements OnIn
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    this.searchSubscription.unsubscribe();
+  }
+
+  onSearchTermChange() {
+    this.searchSubject.next(this.searchTerm);
   }
 
   get filteredOptions(): FilterOption[] {
     if (!this.searchTerm) return this.filterOptions;
-    
+
     // Filter by search term but keep all options visible for multi-select
     const filtered = this.filterOptions.filter(option =>
       option.value.toString().toLowerCase().includes(this.searchTerm.toLowerCase())
     );
-    
+
     return filtered;
   }
 
   onSortChange(direction: 'asc' | 'desc'): void {
     this.sortDirection = direction;
     console.log('Filter panel sort change:', this.column, direction);
-    
+
     // Apply sorting to the main data table
     this.dataService.setSort(this.column, direction);
-    
+
     // Also sort the filter options for display
     this.filterOptions.sort((a, b) => {
       if (direction === 'asc') {
@@ -222,7 +224,7 @@ export class FilterPanelComponent<T extends DataItem = DataItem> implements OnIn
     console.log('Option changed:', option.value, 'selected:', !option.selected);
     option.selected = !option.selected;
     this.updateSelectAllState();
-    
+
     if (this.autoApply) {
       console.log('Auto-applying filter');
       this.applyFilter();
@@ -235,7 +237,7 @@ export class FilterPanelComponent<T extends DataItem = DataItem> implements OnIn
     filteredOptions.forEach(option => {
       option.selected = this.selectAll;
     });
-    
+
     if (this.autoApply) {
       console.log('Auto-applying select all filter');
       this.applyFilter();
@@ -290,7 +292,7 @@ export class FilterPanelComponent<T extends DataItem = DataItem> implements OnIn
       const selectedValues = this.filterOptions
         .filter(option => option.selected)
         .map(option => option.value);
-      
+
       console.log('Applying list filter with values:', selectedValues);
       this.apply.emit({ values: selectedValues });
     } else if (this.filterMode === 'text' && this.isTextColumn) {
@@ -311,12 +313,12 @@ export class FilterPanelComponent<T extends DataItem = DataItem> implements OnIn
       // Number filter mode for number columns
       const needsValue = !['top10', 'bottom10', 'aboveAverage', 'belowAverage'].includes(this.numberFilterOperator);
       const needsSecondValue = this.numberFilterOperator === 'between';
-      
+
       if (!needsValue || (this.numberFilterValue !== null && (!needsSecondValue || this.numberFilterValue2 !== null))) {
         const numberFilter: any = {
           operator: this.numberFilterOperator
         };
-        
+
         if (needsValue) {
           const parsedValue = parseFloat(String(this.numberFilterValue));
           if (isNaN(parsedValue)) {
@@ -325,7 +327,7 @@ export class FilterPanelComponent<T extends DataItem = DataItem> implements OnIn
             return;
           }
           numberFilter.value = parsedValue;
-          
+
           if (needsSecondValue) {
             const parsedValue2 = parseFloat(String(this.numberFilterValue2));
             if (isNaN(parsedValue2)) {
@@ -336,7 +338,7 @@ export class FilterPanelComponent<T extends DataItem = DataItem> implements OnIn
             numberFilter.value2 = parsedValue2;
           }
         }
-        
+
         console.log('Applying number filter:', numberFilter);
         this.apply.emit({ numberFilter });
       } else {
@@ -347,12 +349,12 @@ export class FilterPanelComponent<T extends DataItem = DataItem> implements OnIn
       // Date filter mode for date columns
       const needsValue = ['equals', 'before', 'after', 'between'].includes(this.dateFilterOperator);
       const needsSecondValue = this.dateFilterOperator === 'between';
-      
+
       if (!needsValue || (this.dateFilterValue !== null && (!needsSecondValue || this.dateFilterValue2 !== null))) {
         const dateFilter: any = {
           operator: this.dateFilterOperator
         };
-        
+
         if (needsValue) {
           if (!this.dateFilterValue) {
             console.log('Invalid date value:', this.dateFilterValue);
@@ -360,7 +362,7 @@ export class FilterPanelComponent<T extends DataItem = DataItem> implements OnIn
             return;
           }
           dateFilter.value = this.dateFilterValue;
-          
+
           if (needsSecondValue) {
             if (!this.dateFilterValue2) {
               console.log('Invalid second date value:', this.dateFilterValue2);
@@ -370,7 +372,7 @@ export class FilterPanelComponent<T extends DataItem = DataItem> implements OnIn
             dateFilter.value2 = this.dateFilterValue2;
           }
         }
-        
+
         console.log('Applying date filter:', dateFilter);
         this.apply.emit({ dateFilter });
       } else {
@@ -404,5 +406,49 @@ export class FilterPanelComponent<T extends DataItem = DataItem> implements OnIn
     if (!target.closest('.filter-panel')) {
       this.close.emit();
     }
+  }
+
+  visibleItems: FilterOption[] = [];
+  itemHeight = 24;           // height per row in px
+  buffer = 5;                // small buffer rows
+  batchSize = 20;    // load 20 at a time
+  scrollLoading = false;
+
+  onScroll(event: any): void {
+    const element = event.target;
+    const scrollPosition = element.scrollTop + element.clientHeight;
+    const scrollHeight = element.scrollHeight;
+
+    // Calculate distance from bottom
+    const distanceFromBottom = scrollHeight - scrollPosition;
+
+    // Height per item (approx) — tweak if you know exact height
+    const itemHeight = element.scrollHeight / this.visibleItems.length;
+
+    // Number of items left visible below viewport
+    const itemsRemaining = Math.ceil(distanceFromBottom / itemHeight);
+
+    // Trigger when only 5 items remain
+    if (itemsRemaining <= this.buffer && !this.scrollLoading) {
+      this.loadMore();
+    }
+  }
+
+  private loadMore(): void { // simulate async delay (optional)
+    if (this.visibleItems.length >= this.filterOptions.length) return;
+
+    this.scrollLoading = true;
+    setTimeout(() => {
+      const nextBatch = this.filterOptions
+        .filter(option =>
+          !this.searchTerm || option.value.toString().toLowerCase().includes(this.searchTerm.toLowerCase())
+        )
+        .slice(
+          this.visibleItems.length,
+          this.visibleItems.length + this.batchSize
+        );
+      this.visibleItems = [...this.visibleItems, ...nextBatch];
+      this.scrollLoading = false;
+    }, 0);
   }
 }

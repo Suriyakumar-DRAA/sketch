@@ -23,9 +23,9 @@
                   Show All
                 </label>
               </div>
-              <div class="form-check form-switch">
+              <div class="form-check form-switch" *ngIf="enableShowTotalsToggle">
                 <input class="form-check-input" type="checkbox" id="showTotalsToggle" [(ngModel)]="showTotals"
-                  name="showTotals" (change)="onShowTotalsChange()">
+                  name="showTotals" (change)="onShowTotalsChange()" >
                 <label class="form-check-label" for="showTotalsToggle">
                   Show Totals
                 </label>

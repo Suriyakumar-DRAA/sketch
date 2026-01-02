@@ -33,7 +33,7 @@
             <!-- Search Box (not in an input group) -->
             <div class="data-table-search-container col-4">
                 <i class="bi bi-search data-table-search-icon"></i>
-                <input type="text" class="form-control data-table-search-input" placeholder="Search all columns..."
+                <input type="text" #searchInput class="form-control data-table-search-input" placeholder="Search all columns..."
                     aria-label="Search" [(ngModel)]="searchTerm" (ngModelChange)="onSearchChange()">
             </div>
             <!-- Export to Excel Button -->
@@ -54,10 +54,10 @@
 
 <!-- Data Table -->
 <div class="table-responsive ag-datatables" style="max-height: 600px; overflow-y: auto;">
-    <table class="table table-bordered table-hover mb-0">
+    <table class="table table-bordered table-hover mb-0" #tableContainer>
         <thead class="sticky-top">
             <tr>
-                <th *ngFor="let column of displayColumns">
+                <th *ngFor="let column of displayColumns" [style.width]="column.width" class="text-wrap">
                     <app-column-header [config]="column" [hasActiveFilter]="hasActiveFilter(column.key)"
                         [excelFiltersEnabled]="excelFiltersEnabled" [sortDirection]="getSortDirection(column.key)"
                         (filter)="onFilter($event)" (sort)="onSort($event)">
@@ -65,14 +65,14 @@
                 </th>
             </tr>
         </thead>
-        <tbody>
+        <tbody >
             <tr *ngIf="displayData.length === 0">
                 <td [attr.colspan]="displayColumns.length" class="text-center">
                     No data available
                 </td>
             </tr>
             <!-- Totals Row -->
-            <tr class="table-totals" *ngIf="showTotals && displayData.length > 0">
+            <tr class="table-totals"  *ngIf="showTotals && displayData.length > 0">
                 <td *ngFor="let column of displayColumns" class="fw-bold">
                     <span *ngIf="column.type === 'number' || column.type === 'currency'">
                         <div class="total-display">
@@ -89,15 +89,16 @@
                     </span>
                 </td>
             </tr>
-            <tr *ngFor="let row of displayData" (click)="onRowClick(row)">
+            <tr *ngFor="let row of displayData; let index = index" (click)="onRowClick(row)" [attr.data-index]="index"
+            [ngClass]="{'row_0': index === 0}">
                 <ng-container *ngFor="let column of displayColumns">
                     <td [style.width]="column.width" class="{{ column.columnClass || '' }}"
                         (click)="onColumnClick($event, row, column)" *ngIf="row[column.key + '_rowspan'] !== 0"
                         [attr.rowspan]="row[column.key + '_rowspan'] || null"
-                        [ngClass]="{ 'merged-cell': row[column.key + '_rowspan'] > 0 }">
+                        [ngClass]="{ 'merged-cell': row[column.key + '_rowspan'] > 1 }">
                         <ng-container *ngIf="column.template; else defaultCell">
                             <ng-container
-                                *ngTemplateOutlet="column.template; context: { $implicit: row[column.key], row: row, column: column }">
+                                *ngTemplateOutlet="column.template; context: { $implicit: getFormattedCell(row, column), raw: row[column.key], row: row, column: column }">
                             </ng-container>
                         </ng-container>
 
@@ -108,7 +109,7 @@
                                     [attr.target]="column.link!.target || '_self'"
                                     [innerHTML]="getFormattedCell(row, column)">
                                 </a>
-                                <span *ngSwitchDefault class="{{ getHighlightClass(row[column.key], column) }}"
+                                <span *ngSwitchDefault class="{{ getHighlightClass(row[column.key], column, row) }}"
                                     [innerHTML]="getFormattedCell(row, column)">
                                 </span>
                             </ng-container>
@@ -127,7 +128,7 @@
 </app-pagination>
 
 <!-- Filter Panel -->
-<app-filter-panel *ngIf="filterPanelColumn" [column]="filterPanelColumn" [isVisible]="filterPanelVisible"
+<app-filter-panel *ngIf="filterPanelColumn && filterPanelVisible" [column]="filterPanelColumn" [isVisible]="filterPanelVisible"
     [position]="filterPanelPosition" (apply)="onFilterApply($event)" (close)="onFilterClose()">
 </app-filter-panel>
 

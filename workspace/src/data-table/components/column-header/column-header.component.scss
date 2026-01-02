@@ -2,6 +2,19 @@
 @use './../../styles/variable.scss' as *;
 
 .ag-column-header {
+
+  .header-text {
+    display: block;
+    max-width: 100%;
+    white-space: normal;
+    /* allows wrapping */
+    // word-break: break-word;
+    /* wraps mid-word if needed */
+    overflow-wrap: break-word;
+    line-height: 1.2;
+    cursor: pointer;
+  }
+
   .d-flex.justify-content-between.align-items-center {
     padding: 0.75rem 1rem;
     border-radius: $data-table-radius-sm;
@@ -39,9 +52,9 @@
   }
 
   .sort-indicator {
-    font-size: 0.8em;
+    font-size: 0.9rem;
     color: $data-table-primary;
     font-weight: bold;
-    padding-right: 5px;
+    // padding-left: 5px;
   }
 }

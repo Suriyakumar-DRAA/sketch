@@ -43,7 +43,7 @@ export interface HighlightColumn {
   /** Static class mapping based on cell value. */
   classMap?: { [key: string]: string };
   /** Function to dynamically determine CSS class based on value and row data. */
-  getClassFn?: (value: any, row?: any) => ('badge badge-light-success' | 'badge badge-light-warning' | 'badge badge-light-danger' | 'badge badge-light-secondary' | 'badge badge-light');
+  getClassFn?: (value: any, row?: any) => ('badge badge-light-success' | 'badge badge-light-warning' | 'badge badge-light-danger' | 'badge badge-light-secondary' | 'badge badge-light' | 'badge badge-light-info' | '');
 }
 
 /**

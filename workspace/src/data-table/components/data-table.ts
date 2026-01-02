@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, HostListener, ViewEncapsulation, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener, ViewEncapsulation, Input, Output, EventEmitter, ViewChild, ElementRef, ChangeDetectorRef, AfterViewInit } from '@angular/core';
 import { CommonModule, CurrencyPipe, DecimalPipe, formatDate } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subject, takeUntil, combineLatest, debounceTime, distinctUntilChanged, retry, take } from 'rxjs';
@@ -20,7 +20,7 @@ import { GenericDataService } from '../services/generic-data.service';
  * @typeparam T - The type of data item displayed in the table. Defaults to `DataItem`.
  * 
  * @example
- * <data-table [data]="myData" [columns]="myColumns"></data-table>
+ * <datatable [data]="myData" [columns]="myColumns"></datatable>
  * 
  * @inputs
  * @param {T[]} data - The array of data items to display in the table.
@@ -45,7 +45,8 @@ import { GenericDataService } from '../services/generic-data.service';
  * @since 1.0.0
  */
 @Component({
-  selector: 'data-table',
+  selector: 'datatable',
+  standalone: true,
   /**
   * @ignore
   */
@@ -76,6 +77,10 @@ export class DataTable<T extends DataItem = DataItem> implements OnInit, OnDestr
   @Output() rowClick = new EventEmitter<any>();
   @Output() columnClick = new EventEmitter<{ row: any; column: ColumnConfig }>();
   @Output() exportData = new EventEmitter<{ row: any; column: ColumnConfig }>();
+
+  @ViewChild('tableContainer') tableContainerRef!: ElementRef<HTMLDivElement>;
+  @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
+
 
   /**
   * @ignore
@@ -167,12 +172,17 @@ export class DataTable<T extends DataItem = DataItem> implements OnInit, OnDestr
     private dataService: GenericDataService<T>,
     private themeService: ThemeService,
     private decimalPipe: DecimalPipe,
+    private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
     this.themeService.initializeTheme();
     this.setupSubscriptions();
     this.initializeData(this.data);
+
+    setTimeout(() => {
+      this.searchInput.nativeElement.focus();
+    }, 0);
   }
 
   /**
@@ -195,11 +205,16 @@ export class DataTable<T extends DataItem = DataItem> implements OnInit, OnDestr
     this.destroy$.next();
     this.destroy$.complete();
   }
-
   /**
   * @ignore
   */
   private initializeData(formattedData: T[]): void {
+    if (!formattedData || formattedData.length === 0) {
+      this.dataService.initialize([], this.columns);
+      this.totalRecords = 0;
+      this.displayData = [];
+      return;
+    }
     if (formattedData.length > 0 && this.columns.length > 0) {
       // Initialize all columns as visible by default
       this.visibleColumns = new Set(this.columns.map(c => c.key));
@@ -229,9 +244,9 @@ export class DataTable<T extends DataItem = DataItem> implements OnInit, OnDestr
   private setupSubscriptions(): void {
     // Setup debounced search
     this.searchSubject.pipe(
-      debounceTime(300), // Wait 300ms after user stops typing
+      debounceTime(1000), // Wait 1 second after user stops typing
       distinctUntilChanged(), // Only emit if value actually changed
-      takeUntil(this.destroy$)
+      // takeUntil(this.destroy$)
     ).subscribe(searchTerm => {
       this.dataService.setSearch(searchTerm);
     });
@@ -282,24 +297,24 @@ export class DataTable<T extends DataItem = DataItem> implements OnInit, OnDestr
       console.warn('Row merging is enabled but no mergeRowsBy key is specified.');
       return items;
     }
-    
+
     if (!items || items.length === 0 || !this.mergeRowsBy || !this.rowMergeEnabled) {
       return items;
     }
 
-    // 1️⃣ Sort items by mergeRowsBy value first
-    const sortedItems = [...items].sort((a: any, b: any) => {
-      const key = this.mergeRowsBy!;
-      const aVal = (a[key] ?? '').toString().toLowerCase();
-      const bVal = (b[key] ?? '').toString().toLowerCase();
-      return aVal.localeCompare(bVal);
-    });
+    // // 1️⃣ Sort items by mergeRowsBy value first
+    // const sortedItems = [...items].sort((a: any, b: any) => {
+    //   const key = this.mergeRowsBy!;
+    //   const aVal = (a[key] ?? '').toString().toLowerCase();
+    //   const bVal = (b[key] ?? '').toString().toLowerCase();
+    //   return aVal.localeCompare(bVal);
+    // });
 
     const mergedData: any[] = [];
     let currentGroupValue: any = null;
     let currentGroup: any[] = [];
 
-    for (const item of sortedItems) {
+    for (const item of items) {
       const keyValue = item[this.mergeRowsBy];
 
       if (keyValue !== currentGroupValue) {
@@ -355,7 +370,7 @@ export class DataTable<T extends DataItem = DataItem> implements OnInit, OnDestr
 
     const rect = (event.event.target as HTMLElement).getBoundingClientRect();
     const columnIndex = this.columns.findIndex(col => col.key === event.column);
-    const isLastTwoColumns = columnIndex >= this.columns.length - 2;
+    const isLastTwoColumns = columnIndex >= this.columns.length - 3;
 
     // Calculate position relative to viewport, not accounting for scroll
     // since we're using fixed positioning
@@ -401,6 +416,9 @@ export class DataTable<T extends DataItem = DataItem> implements OnInit, OnDestr
   */
   onPageChange(page: number): void {
     this.dataService.setPagination({ currentPage: page });
+    const container = this.tableContainerRef.nativeElement;
+    const firstRow = container.querySelector('.row_0') as HTMLElement;
+    firstRow.scrollIntoView({ behavior: 'smooth', block: 'end', });
   }
 
   /**
@@ -426,7 +444,6 @@ export class DataTable<T extends DataItem = DataItem> implements OnInit, OnDestr
   onSearchChange(): void {
     this.searchSubject.next(this.searchTerm);
   }
-
   /**
   * @ignore
   */
@@ -666,7 +683,7 @@ export class DataTable<T extends DataItem = DataItem> implements OnInit, OnDestr
     const digit = (column as any).digit || 0;
     const link = (column as any).link;
 
-    if (column.displayDataFn) return column.displayDataFn(row);
+    if (column.displayDataFn) return column.displayDataFn(value, row);
 
     if (value === null || value === undefined) {
       return '';
@@ -722,7 +739,7 @@ export class DataTable<T extends DataItem = DataItem> implements OnInit, OnDestr
   onDocumentClick(event: MouseEvent): void {
     const target = event.target as HTMLElement;
     if (!target.closest('.filter-panel') && !target.closest('[data-filter-trigger]')) {
-      this.filterPanelVisible = false;
+      this.onFilterClose()
     }
   }
   /**
@@ -731,7 +748,7 @@ export class DataTable<T extends DataItem = DataItem> implements OnInit, OnDestr
   @HostListener('window:scroll', [])
   onWindowScroll(): void {
     if (this.filterPanelVisible) {
-      this.filterPanelVisible = false;
+      this.onFilterClose()
     }
   }
 
@@ -741,7 +758,7 @@ export class DataTable<T extends DataItem = DataItem> implements OnInit, OnDestr
   @HostListener('document:scroll', [])
   onDocumentScroll(): void {
     if (this.filterPanelVisible) {
-      this.filterPanelVisible = false;
+      this.onFilterClose()
     }
   }
 
@@ -827,7 +844,7 @@ export class DataTable<T extends DataItem = DataItem> implements OnInit, OnDestr
     } else {
       this.visibleColumns.delete(event.column);
     }
-    this.updateDisplayColumns();
+    this.displayColumns = this.updateDisplayColumns();
   }
 
   /**
@@ -859,7 +876,7 @@ export class DataTable<T extends DataItem = DataItem> implements OnInit, OnDestr
     } else {
       this.visibleColumns.delete(event.column);
     }
-    this.updateDisplayColumns();
+    this.displayColumns = this.updateDisplayColumns();
   }
 
   onClose() {

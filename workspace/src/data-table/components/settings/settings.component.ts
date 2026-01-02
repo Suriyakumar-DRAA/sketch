@@ -24,13 +24,16 @@ export class SettingsComponent {
   @Output() totalChange = new EventEmitter<boolean>();
 
   allColumnsVisible: boolean = false;
+  enableShowTotalsToggle: boolean = false;
 
   constructor() {
   }
 
   async ngOnChanges() {
+    const self = this;
     if (this.columns || this.visibleColumns) {
       this.allColumnsVisible = this.columns.length === this.visibleColumns.size;
+      this.enableShowTotalsToggle = this.columns.some(col => col.type === 'number' || col.type === 'currency');
     }
   }
 

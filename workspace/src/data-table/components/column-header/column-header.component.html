@@ -1,10 +1,13 @@
-<div class="d-flex justify-content-between align-items-center p-2 ag-column-header" (click)="onHeaderClick()">
-  <span class="fw-semibold">{{ config.label }}</span>
-
-  <div class="d-flex align-items-center">
+<div class="d-flex justify-content-between align-items-center p-2 ag-column-header">
+  <span class="header-text" (click)="onHeaderClick()">
+    {{ config.label }}
     <span class="sort-indicator" *ngIf="config.sortable && sortDirection">
       {{ sortDirection === 'asc' ? '↑' : '↓' }}
     </span>
+  </span>
+
+
+  <div class="d-flex align-items-center">
 
     <button type="button" *ngIf="config.filterable" data-filter-trigger class="btn btn-sm p-1"
       [class.btn-primary]="hasActiveFilter" [class.btn-outline-secondary]="!hasActiveFilter" (click)="onFilter($event)"

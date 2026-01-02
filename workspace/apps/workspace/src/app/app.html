@@ -1,5 +1,5 @@
 <!-- Bootstrap 5 Example -->
-<div class="d-flex justify-content-center mt-4">
+<!-- <div class="d-flex justify-content-center mt-4">
     <div class="row">
         <div class="col-12">
             <h3 class="text-primary">
@@ -23,7 +23,7 @@
                     </div>
                     <div class="col mb-2">
                         <textbox label="First Name" [(ngModel)]="patientDetail.firstName" name="firstName"
-                            [minLength]="2" [maxLength]="40" [required]="true" [allowedChars]="'alpha'"
+                            [minLength]="2" [maxLength]="10" [required]="true" [allowedChars]="'alpha'"
                             [submitted]="submitted">
                         </textbox>
                     </div>
@@ -53,14 +53,15 @@
             </form>
         </div>
     </div>
-</div>
+</div> -->
+
 
 <div class="form-container">
     <div class=" card shadow-sm m-4">
         <div class="card-body mb-4">
             <div class="row">
                 <div class="col-12">
-                    <data-table [data]="data" [columns]="columns" [mergeRowsBy]="'department'"> </data-table>
+                    <datatable [data]="data" [columns]="columns" [mergeRowsBy]="'department'"> </datatable>
                 </div>
             </div>
         </div>

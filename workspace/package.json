@@ -10,8 +10,9 @@
     "build:datatable": "npx ng-packagr -p src/data-table/ng-package.json",
     "build:root": "npx ng-packagr -p src/root/ng-package.json",
     "build": "npm run build:utils && npm run build:textbox && npm run build:dropdown && npm run build:datepicker && npm run build:datatable && npm run build:root",
-    "start:app": "nx serve workspace",
-    "publish": "cd dist/sketch && npm publish --access public",
+    "start:app": "nx serve workspace --open --port=4300",
+    "publish:dev": "cd dist/sketch && npm publish --tag dev",
+    "publish": "cd dist/sketch && npm publish --tag latest",
     "docs": "compodoc -p tsconfig.docs.json -d docs --exportFormat html",
     "docs:serve": "compodoc -s -d docs"
   },

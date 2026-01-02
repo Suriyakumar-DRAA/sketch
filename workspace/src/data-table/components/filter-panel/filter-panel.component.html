@@ -82,7 +82,7 @@
         <div class="data-table-search-container mb-3">
           <i class="bi bi-search data-table-search-icon"></i>
           <input type="text" class="form-control form-control-sm data-table-search-input" placeholder="Search values..."
-            aria-label="Search" [(ngModel)]="searchTerm">
+            aria-label="Search" [(ngModel)]="searchTerm" (ngModelChange)="onSearchTermChange()">
         </div>
 
         <!-- Select All -->
@@ -98,14 +98,14 @@
         </div>
         <hr class="my-2">
         <!-- Filter Options -->
-        <div style="max-height: 260px; overflow-y: auto;">
+        <div style="max-height: 260px; overflow-y: auto;" (scroll)="onScroll($event)" #scrollContainer>
           <div class="text-center py-3" *ngIf="loading">
             <div class="spinner"></div>
             <div class="small text-muted mt-1">Loading options...</div>
           </div>
 
           <div class="form-check d-flex justify-content-between align-items-center py-1 pe-2"
-            *ngFor="let option of filteredOptions">
+            *ngFor="let option of visibleItems">
             <div class="d-flex align-items-center">
               <input class="form-check-input me-2" type="checkbox" [id]="'option-' + option.key"
                 [checked]="option.selected" (change)="onOptionChange(option)">

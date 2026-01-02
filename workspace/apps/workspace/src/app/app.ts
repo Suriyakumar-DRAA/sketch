@@ -4,7 +4,8 @@ import { RouterModule } from '@angular/router';
 import { Textbox } from '@suriya_40/sketch/textbox';
 import { Dropdown } from '@suriya_40/sketch/dropdown';
 import { Datepicker } from '@suriya_40/sketch/datepicker';
-import { DataTable, ColumnConfig, DataItem } from '@suriya_40/sketch/data-table';
+import { DataTable, ColumnConfig, DataItem } from '../../../../src/data-table';
+
 export interface PatientDetail {
   salutation?: string;
   firstName?: string;
@@ -80,7 +81,7 @@ export class App implements OnInit {
     const lastNames = ['Ramirez', 'Nguyen', 'White', 'Phillips', 'Brown', 'Green', 'Rogers', 'Reyes', 'Richardson', 'Allen', 'Ortiz', 'Perez', 'Garcia'];
 
     const data: Employee[] = [];
-    for (let i = 1; i <= 1000; i++) {
+    for (let i = 1; i <= 100000; i++) {
       data.push({
         id: i,
         url: `https://example.com/employee/${i}`,
@@ -98,7 +99,8 @@ export class App implements OnInit {
 
   private generateColumnConfig(): Array<ColumnConfig> {
     return [
-      { key: 'name', label: 'Name', type: 'text', sortable: true, filterable: true,
+      {
+        key: 'name', label: 'Name', type: 'text', sortable: true, filterable: true,
         link: {
           target: '_blank',
           getUrlFn: (value: any, row?: any) => {
@@ -106,11 +108,11 @@ export class App implements OnInit {
             return 'https://example.com/employee/' + row.id;
           },
         }
-       },
+      },
       { key: 'email', label: 'Email', type: 'text', sortable: true, filterable: true },
-      { key: 'department', label: 'Department', type: 'text', sortable: true, filterable: true },
+      { key: 'department', label: 'Department', type: 'text', sortable: true, filterable: true, mergeRows: true },
       {
-        key: 'salary', label: 'Salary', type: 'currency', symbol: true, sortable: true, filterable: true,
+        key: 'salary', label: 'Salary', type: 'currency', format: 'INR', symbol: true, sortable: true, filterable: true,
         highlightColumn: {
           type: 'badge',
           getClassFn: (value) => {

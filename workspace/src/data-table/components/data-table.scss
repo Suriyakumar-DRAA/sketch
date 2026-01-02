@@ -1,5 +1,5 @@
 /* Custom styles that work with Bootstrap */
-// @use '@suriya_40/sketch/data-table/styles/styles.scss' as *;
+// @use '@dragarwals/sketch/data-table/styles/styles.scss' as *;
 @use './../styles/variable.scss' as *;
 
 @media (max-width: 768px) {
@@ -43,17 +43,20 @@
   }
 
   .table th {
-    font-size: 0.95rem;
-    padding: 0.4rem;
-    font-weight: bold;
+    padding: 0.3rem;
+    font-weight: 600;
+    font-size: 13.5px;
     border-bottom: 2px solid $data-table-border;
     background-color: $data-table-header-bg;
-    cursor: pointer;
+    // cursor: pointer;
   }
 
-  .table tbody {
-    font-size: 0.9rem;
+  .table th.text-wrap {
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
+
 
   tbody tr:hover {
     background-color: $data-table-hover !important;
@@ -63,7 +66,8 @@
 
   tbody tr td {
     background: #ffffff;
-    padding: 1rem 0.75rem;
+    padding: 0.4rem;
+    font-size: 13px;
   }
 
   .table tr:last-child td {
@@ -71,7 +75,8 @@
   }
 
   td .badge {
-    padding: 0.5rem
+    padding: 0.3rem;
+    font-size: 13px;
   }
 
   td a {
@@ -126,6 +131,19 @@
     &:hover {
       background-color: #d1d5db;
       /* Slightly darker gray on hover */
+    }
+  }
+
+    /* --- Custom Badge Style: Info --- */
+  .badge-light-info {
+    background-color: #e5f3ff;
+    /* Light blue */
+    color: #1e3a8a;
+
+    /* Dark blue text */
+    &:hover {
+      background-color: #d1e8ff;
+      /* Slightly darker blue on hover */
     }
   }
 
@@ -186,7 +204,6 @@
   }
 
   .merged-cell {
-    text-align: center;
     vertical-align: middle;
   }
 }

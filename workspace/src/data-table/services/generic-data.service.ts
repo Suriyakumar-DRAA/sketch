@@ -26,7 +26,7 @@ function isDateValue(value: any): boolean {
 export class GenericDataService<T extends DataItem> {
   private originalData: T[] = [];
   private columns: ColumnConfig[] = [];
-  
+
   private filtersSubject = new BehaviorSubject<Map<string, FilterConfig>>(new Map());
   private sortSubject = new BehaviorSubject<SortConfig | null>(null);
   private paginationSubject = new BehaviorSubject<PaginationConfig>({
@@ -53,35 +53,40 @@ export class GenericDataService<T extends DataItem> {
       if (search) {
         const searchLower = search.toLowerCase();
         const isNumericSearch = /^\d+$/.test(search);
-        
+        const visibleColumns = this.columns.map(col => col.key);
+
         data = data.filter(item => {
           // Check each field for search term
           for (const [key, value] of Object.entries(item)) {
+
+            // Skip columns that are not visible
+            if (!visibleColumns.includes(key)) continue;
+
             if (value === null || value === undefined) continue;
-            
+
             let stringValue: string;
-            
+
             // Handle nested objects and arrays
             if (typeof value === 'object') {
               stringValue = JSON.stringify(value).toLowerCase();
             } else {
               stringValue = String(value).toLowerCase();
             }
-            
+
             // Quick numeric search
             if (isNumericSearch && stringValue.includes(search)) {
               return true;
             }
-            
+
             // Text search
             if (stringValue.includes(searchLower)) {
               return true;
             }
-            
+
             // Boolean field search
             if (typeof value === 'boolean') {
               if ((value && (searchLower === 'true' || searchLower === 'active' || searchLower === '✓')) ||
-                  (!value && (searchLower === 'false' || searchLower === 'inactive' || searchLower === '✗'))) {
+                (!value && (searchLower === 'false' || searchLower === 'inactive' || searchLower === '✗'))) {
                 return true;
               }
             }
@@ -96,7 +101,7 @@ export class GenericDataService<T extends DataItem> {
           data = data.filter(item => {
             const value = String(item[column]).toLowerCase();
             const filterValue = filter.textFilter!.value.toLowerCase();
-            
+
             switch (filter.textFilter!.operator) {
               case 'equals': return value === filterValue;
               case 'notEquals': return value !== filterValue;
@@ -113,13 +118,13 @@ export class GenericDataService<T extends DataItem> {
           data = data.filter(item => {
             const rawValue = this.getNestedValue(item, column);
             const value = Number(rawValue);
-            
+
             // Skip invalid numbers
             if (isNaN(value)) return false;
-            
+
             const filterValue = filter.numberFilter!.value;
             const filterValue2 = filter.numberFilter!.value2;
-            
+
             switch (filter.numberFilter!.operator) {
               case 'equals': return value === filterValue!;
               case 'notEquals': return value !== filterValue!;
@@ -127,8 +132,8 @@ export class GenericDataService<T extends DataItem> {
               case 'greaterThanOrEqual': return value >= filterValue!;
               case 'lessThan': return value < filterValue!;
               case 'lessThanOrEqual': return value <= filterValue!;
-              case 'between': return filterValue !== undefined && filterValue2 !== undefined && 
-                                   value >= filterValue && value <= filterValue2;
+              case 'between': return filterValue !== undefined && filterValue2 !== undefined &&
+                value >= filterValue && value <= filterValue2;
               case 'top10':
                 // This will be handled separately after all filters
                 return true;
@@ -153,15 +158,15 @@ export class GenericDataService<T extends DataItem> {
         } else if (filter.filterType === 'date' && filter.dateFilter) {
           data = data.filter(item => {
             const itemDate = new Date(item[column] as string);
-            
+
             // Skip invalid dates
             if (isNaN(itemDate.getTime())) {
               return false;
             }
-            
+
             const today = new Date();
             today.setHours(0, 0, 0, 0);
-            
+
             switch (filter.dateFilter!.operator) {
               case 'equals':
                 if (!filter.dateFilter!.value) return false;
@@ -254,7 +259,7 @@ export class GenericDataService<T extends DataItem> {
         data.sort((a, b) => {
           const aVal = this.getNestedValue(a, sort.column);
           const bVal = this.getNestedValue(b, sort.column);
-          
+
           // Handle null/undefined values
           if (aVal === null || aVal === undefined) {
             if (bVal === null || bVal === undefined) return 0;
@@ -263,10 +268,10 @@ export class GenericDataService<T extends DataItem> {
           if (bVal === null || bVal === undefined) {
             return sort.direction === 'asc' ? -1 : 1; // null values go to end
           }
-          
+
           // Handle different data types
           let comparison = 0;
-          
+
           // For numbers
           if (typeof aVal === 'number' && typeof bVal === 'number') {
             comparison = aVal - bVal;
@@ -287,7 +292,7 @@ export class GenericDataService<T extends DataItem> {
             const strB = String(bVal).toLowerCase();
             comparison = strA.localeCompare(strB);
           }
-          
+
           return sort.direction === 'desc' ? -comparison : comparison;
         });
       }
@@ -311,7 +316,7 @@ export class GenericDataService<T extends DataItem> {
       if (pagination.pageSize === -1) {
         return data;
       }
-      
+
       const startIndex = (pagination.currentPage - 1) * pagination.pageSize;
       const endIndex = startIndex + pagination.pageSize;
       return data.slice(startIndex, endIndex);
@@ -323,15 +328,15 @@ export class GenericDataService<T extends DataItem> {
     console.log('GenericDataService.initialize called with:', data.length, 'records');
     console.log('Sample record:', data[0]);
     console.log('Columns to set:', columns.map(c => c.key));
-    
+
     this.originalData = data;
     this.columns = columns;
-    
+
     // Reset all state
     this.filtersSubject.next(new Map());
     this.sortSubject.next(null);
     this.searchSubject.next('');
-    
+
     this.paginationSubject.next({
       currentPage: 1,
       pageSize: 25,
@@ -345,71 +350,73 @@ export class GenericDataService<T extends DataItem> {
 
   getFilterOptions(column: string): Observable<FilterOption[]> {
     return new Observable<FilterOption[]>(observer => {
-      setTimeout(() => {
-        let dataToAnalyze = [...this.originalData];
-        
-        // Apply all filters except the one for the column we're currently filtering
-        const currentFilters = this.filtersSubject.value;
-        const searchTerm = this.searchSubject.value;
-        
-        // Apply global search
-        if (searchTerm) {
-          dataToAnalyze = dataToAnalyze.filter(item =>
-            Object.values(item).some(value => {
-              if (typeof value === 'object') {
-                return JSON.stringify(value).toLowerCase().includes(searchTerm.toLowerCase());
-              }
-              return value.toString().toLowerCase().includes(searchTerm.toLowerCase());
-            })
-          );
+      // setTimeout(() => {
+      let dataToAnalyze = [...this.originalData];
+
+      // Apply all filters except the one for the column we're currently filtering
+      const currentFilters = this.filtersSubject.value;
+      const searchTerm = this.searchSubject.value;
+
+      // Apply global search
+      if (searchTerm) {
+        dataToAnalyze = dataToAnalyze.filter(item =>
+          Object.values(item).some(value => {
+            if (typeof value === 'object') {
+              return JSON.stringify(value).toLowerCase().includes(searchTerm.toLowerCase());
+            }
+            return value.toString().toLowerCase().includes(searchTerm.toLowerCase());
+          })
+        );
+      }
+
+      // Apply other filters (excluding current column)
+      currentFilters.forEach((filter, filterColumn) => {
+        if (filterColumn === column) return;
+
+        if (filter.filterType === 'text' && filter.textFilter) {
+          dataToAnalyze = dataToAnalyze.filter(item => {
+            const rawValue = this.getNestedValue(item, filterColumn);
+            const value = String(rawValue).toLowerCase();
+            const filterValue = filter.textFilter!.value.toLowerCase();
+
+            switch (filter.textFilter!.operator) {
+              case 'equals': return value === filterValue;
+              case 'contains': return value.includes(filterValue);
+              default: return true;
+            }
+          });
+        } else if (filter.values && filter.values.length > 0) {
+          dataToAnalyze = dataToAnalyze.filter(item => {
+            const value = this.getNestedValue(item, filterColumn);
+            return filter.values.includes(value);
+          });
         }
-        
-        // Apply other filters (excluding current column)
-        currentFilters.forEach((filter, filterColumn) => {
-          if (filterColumn === column) return;
-          
-          if (filter.filterType === 'text' && filter.textFilter) {
-            dataToAnalyze = dataToAnalyze.filter(item => {
-              const rawValue = this.getNestedValue(item, filterColumn);
-              const value = String(rawValue).toLowerCase();
-              const filterValue = filter.textFilter!.value.toLowerCase();
-              
-              switch (filter.textFilter!.operator) {
-                case 'equals': return value === filterValue;
-                case 'contains': return value.includes(filterValue);
-                default: return true;
-              }
-            });
-          } else if (filter.values && filter.values.length > 0) {
-            dataToAnalyze = dataToAnalyze.filter(item => {
-              const value = this.getNestedValue(item, filterColumn);
-              return filter.values.includes(value);
-            });
-          }
-        });
-        
-        // Count unique values
-        const valueCountMap = new Map<any, number>();
-        for (const item of dataToAnalyze) {
-          const value = this.getNestedValue(item, column);
-          const displayValue = this.formatValueForDisplay(value);
-          valueCountMap.set(value, (valueCountMap.get(value) || 0) + 1);
-        }
-        
-        // Get current active filters
-        const currentFilter = currentFilters.get(column);
-        
-        // Create filter options
-        const options = Array.from(valueCountMap.entries()).map(([value, count]) => ({
-          key: String(value),
-          value: this.formatValueForDisplay(value),
-          count: count,
-          selected: currentFilter ? currentFilter.values.includes(value) : false
-        }));
-        
-        observer.next(options);
-        observer.complete();
-      }, 0);
+      });
+
+      // Count unique values
+      const valueCountMap = new Map<any, number>();
+
+
+      for (const item of dataToAnalyze) {
+        const value = this.getNestedValue(item, column);
+        const displayValue = this.formatValueForDisplay(value);
+        valueCountMap.set(value, (valueCountMap.get(value) || 0) + 1);
+      }
+
+      // Get current active filters
+      const currentFilter = currentFilters.get(column);
+
+      // Create filter options
+      const options = Array.from(valueCountMap.entries()).map(([value, count]) => ({
+        key: String(value),
+        value: this.formatValueForDisplay(value),
+        count: count,
+        selected: currentFilter ? currentFilter.values.includes(value) : false
+      }));
+
+      observer.next(options);
+      observer.complete();
+      // }, 0);
     });
   }
 
@@ -434,12 +441,12 @@ export class GenericDataService<T extends DataItem> {
     // Handle dot notation like "key.subkey"
     const keys = path.split('.');
     let current = obj;
-    
+
     for (const key of keys) {
       if (current === null || current === undefined) return null;
       current = current[key];
     }
-    
+
     return current;
   }
 
@@ -472,42 +479,42 @@ export class GenericDataService<T extends DataItem> {
 
   setFilterWithConfig(column: string, filterData: { values?: any[], textFilter?: any, numberFilter?: any, dateFilter?: any }): void {
     const currentFilters = new Map(this.filtersSubject.value);
-    
+
     if (filterData.textFilter) {
-      currentFilters.set(column, { 
-        column, 
-        values: [], 
+      currentFilters.set(column, {
+        column,
+        values: [],
         filterType: 'text',
         textFilter: filterData.textFilter
       });
     } else if (filterData.numberFilter) {
-      currentFilters.set(column, { 
-        column, 
-        values: [], 
+      currentFilters.set(column, {
+        column,
+        values: [],
         filterType: 'number',
         numberFilter: filterData.numberFilter
       });
     } else if (filterData.dateFilter) {
-      currentFilters.set(column, { 
-        column, 
-        values: [], 
+      currentFilters.set(column, {
+        column,
+        values: [],
         filterType: 'date',
         dateFilter: filterData.dateFilter
       });
     } else if (filterData.values && filterData.values.length > 0) {
-      currentFilters.set(column, { 
-        column, 
+      currentFilters.set(column, {
+        column,
         values: filterData.values,
         filterType: 'list'
       });
     } else {
       currentFilters.delete(column);
     }
-    
+
     this.filtersSubject.next(currentFilters);
     this.resetPagination();
   }
-  
+
   clearAllFilters(): void {
     this.filtersSubject.next(new Map());
     this.resetPagination();
